@@ -55,7 +55,7 @@ license: "CC BY"
 copyright: 
   holder: Leah R Johnson
   year: 2025
-funding: "The author received no specific funding for this work."
+funding: "NSF DBI#2016264"
 bibliography: linex_refs.bib
 format: 
   pdf:
@@ -89,13 +89,13 @@ mylinexp.up<-function(t, a=0.3, cc=1, Topt=3){
 
 # Introduction
 
-In thermal ecology, there are many traits that are measured. Many of these consist of observations that may reasonably be assumed to be loosely normally distributed at a particular temperature. For example xxxx. The pattern of these traits are then often quantified using TPCs. These TPCs are usually functions that are non-negative (as measured traits are typically non-negative). They are often hump- or u-shaped, and may be either symmetric or asymmetric. In these cases, standard fitting approaches including least squares etc may be used to fit the TPCs to data. Further, as long as the data may reasonably be assumed to be non-negative and likely unbounded, the general approach may still work. For example, if data are counts of events, such as eggs laid, then the standard TPC can be used, but linked to other distributions, such as Poisson or negative binomial, in order to better capture the data.
+In thermal ecology, there are many traits that are measured. The pattern of these traits are then often quantified using TPCs. These TPCs are usually functions that are non-negative (as measured traits are typically non-negative). They are often hump- or u-shaped, and may be either symmetric or asymmetric. Many of these consist of observations that may reasonably be assumed to be loosely normally distributed at a particular temperature. For example xxxx. In these cases, standard fitting approaches including least squares etc may be used to fit the TPCs to data. Further, as long as the data may reasonably be assumed to be non-negative and likely unbounded, the general approach may still work. For example, if data are counts of events, such as eggs laid, then the standard TPC can be used, but linked to other distributions, such as Poisson or negative binomial, in order to better capture the data.
 
 However, this approach is not ideal for data which are bounded. Specifically, proportion data, where the number of "successes" within a given number of trials are recorded, are poorly captured within the standard TPC framework. This us because in order to be approximated by a normal distribution, the number of trials must be large, especially when the success probability is near to either 1 or zero, which is inherently assumed to be the case at temperatures where performance is poor. In particular, any uncertainty bounds around the TPC near where the probabilities are near 1 or 0 become problematic, often giving estimated ranges that do no correspond to appropriate probabilities (i.e., they include values greater than 1 or less than 0). Thus, although NLLS and similar fitting approaches may be used to obtain a point estimate of the TPC parameteris and estimate the resulting mean response, uncertainty bounds for any parameters and for the associated TPC are not meaningful.
 
 An alternative approach is to fit the binomial success data directly using generalized linear models (GLMs). In this approach, the data are recorded as the number of success with the corresponding number of trials instead of as a  proportion. A "link" between the modeled probability, formulated in terms of a linear model, and these binomial outcomes is assumed. This approach is flexible and straightforward. However, because of the requirement that the underlying model be linear in the parameters (e.g., polynomial terms or similar), a standard GLM framework cannot capture the asymmetric patterns that are common in thermal ecology. 
 
-In this short note we introduce a simple extension to the standard GLM formulation of TPCs for binomial data using a non-linear predictor function. This predictor function is highly flexible, allowing a range of shapes (concave up or down, left or right skewed) while being appropriate for use with a binomial modeling approach.  First, we introduce the function and describe the parameters and interpretation. Second, show how to implement it as a TPC to fit trait data in a Bayesian framework using the package `bayesTPC` in R. This allows us to accommodate the non-linear function together with the appropriate link. Third, we give examples of fitting the TPC to simulated data, to explore some subtleties inherent in analysis of these kinds of data. Fourth, we use this to fit data across a sampling of arthropod thermal traits. Finally, we discuss the use of the function more generally. 
+In this short note we introduce a simple extension to the standard GLM formulation of TPCs for binomial data using a non-linear predictor function. This predictor function is highly flexible, allowing a range of shapes (concave up or down, left or right skewed) while also being appropriate for use with a binomial modeling approach.  First, we introduce the function and describe the parameters and interpretation. Second, we show how to implement it as a TPC to fit trait data in a Bayesian framework using the package `bayesTPC` in R. This allows us to accommodate the non-linear function together with the appropriate link. Third, we give examples of fitting the TPC to simulated data, to explore some subtleties inherent in analysis of these kinds of data. Fourth, we use this to fit data across a sampling of arthropod thermal traits. Finally, we discuss the use of the function more generally. 
 
 
 # Methods
@@ -109,7 +109,10 @@ Y_i   = \beta_0 + \beta_1 X_{i1} + \cdots
 $$
 where $Y_i$ is the $i^{\mathrm{th}}$ response variable, $X_{i1} \dots X_{id}$ are the corresponding $d$ predictor variables, the $\beta$s are the regression coefficients, and $\varepsilon$ is the normally distributed noise with variance $\sigma^2$. We can think of an MLR model as having three parts:
 
-1. The ***systematic*** component: the explanatory variables are used to construct a linear predictor $\eta_i = \beta_0 + \beta_1 X_{i1} + \cdots + \beta_d X_{id}$.
+1. The ***systematic*** component: the explanatory variables are used to construct a linear predictor 
+$$
+\eta_i = \beta_0 + \beta_1 X_{i1} + \cdots + \beta_d X_{id}.
+$$ {#eq-linpred}
 2. The ***random*** component: $Y_1,\dots,Y_n$ are normally distributed with $Y_i$ having mean $\mu_i$ and variance $\sigma^2$.
 3. The ***link*** between the random and systematic components: $\mu_i = \eta_i, \;\;\;\;\; i=1,\dots,n$.
 
@@ -139,7 +142,7 @@ where $T_{\mathrm{opt}}$ determines the location of the maximum of the function,
 $$
 f_{\mathrm{up}}(T) = e^{(-a( T_{\mathrm{opt}} - T ) )} - a ( T - T_{\mathrm{opt}}) + c  
 $$ {#eq-LINEX-TPC2}
-where the parameters are as for the concave down version, except that value at the optimum is now the *minimum* which has value $c+1$ (@fig-LINEX, bottom row). Either @eq-LINEX-TPC1 or @eq-LINEX-TPC2 can take the place of the linear predictor in the logistic model (@eq-logistic). We show the inverse logit transform of these equations (corresponding the probability of success) in the righthand panels of @fig-LINEX.
+where the parameters are as for the concave down version, except that value at $T_{\mathrm{opt}}$ is now the *minimum* with a value $f_{\mathrm{up}}(T_{\mathrm{opt}}) = c+1$ (@fig-LINEX, bottom row). Either @eq-LINEX-TPC1 or @eq-LINEX-TPC2 can take the place of the linear predictor (@eq-logistic) in the logistic model (@eq-logistic). We show the inverse logit transform of these equations (corresponding to the probability of success) in the right-hand panels of @fig-LINEX.
 
 ```{r, echo=FALSE, fig.align='center', fig.height=6.5, fig.width=5}
 #| label: fig-LINEX
@@ -187,7 +190,7 @@ abline(v=14, col=2)
 
 ```
 
-We can simulate data from this model to use for testing in a straightforward manner. We define the inverse logit transform of the LINEX function as the probability, $p$, for the target  binomial distribution. We first choose paramters for the LINEX function and the number of trials in an experiment (e.g., the number of eggs). We then draw the number of "successes" (eggs that hatch) using the `rbinom` function in R with the $p$ set as the value of $p$ at the temperature setting, and repeat this across a set number of replicates (@fig-simdat). We will use these simulated data to test the inference functions in the next section. 
+We can simulate data from this model to use for testing in a straightforward manner. We define the inverse logit transform of the LINEX function as the probability, $p$, for the target  binomial distribution. We first choose parameters for the LINEX function and the number of trials in an experiment (e.g., the number of eggs). We then draw the number of "successes" (eggs that hatch) using the `rbinom` function in R with the $p$ set as the value of $p$ at the temperature setting, and repeat this across a set number of replicates (@fig-simdat). We will use these simulated data to test the inference functions in the next section. 
 
 ```{r, echo=FALSE}
 
@@ -279,15 +282,15 @@ lines(ts, inv.logit(mylinexp(ts,  a=-0.3, cc=2, Topt=14)),
 ```
 
 
-## Implementation using `bayesTPC`
+## Bayesian inference of LINEX TPC using `bayesTPC`
 
-In R and most other common statistical software, the sort of extension to GLMs used here are not possible or easy to implement by default. Typically a user would need to be able to manually specify the predictor, link, and likelihood. This must then be  fed into an appropriate optimization routine (to perform maximum likelihood estimation of parameters) or priors can be specified, and Bayesian estimation can be performed (e.g., via Markov-chain Monte Carlo). This typically requires some specialist knowledge. However, the package `bayesTPC` in R allows specification of TPCs and model formulations in a relatively straightforward way ***(CITE)***. Thus we use this package and it's machinary to build a simple example pipeline.  
+In R and most other common statistical software, the sort of extension to GLMs used here are not easy to implement by default. Typically a user would need to be able to manually specify the predictor, link, and likelihood. This must then be  fed into an appropriate optimization routine (to perform maximum likelihood estimation of parameters), or priors can additionally be specified and Bayesian estimation can be performed (e.g., via Markov-chain Monte Carlo). This typically requires some specialist knowledge. However, the package `bayesTPC` in R allows specification of TPCs and model formulations in a relatively straightforward way (@sorek2025). Thus we use this package and it's machinery to build a simple example pipeline.  
 
 Building a model in `bayesTPC` requires three steps: 
 
-1) defining a named TPC with corresponding formula (as an "expression")
-2) defining priors for all parameters that will be fitted as vector with named elements
-3) building the model using the appropriate model specification function -- here `specify_binomial_model` which assumes the appropriate logit link function.
+1) defining a named TPC with corresponding formula (as an R "expression")
+2) defining priors for all parameters that will be fitted as a vector with named elements
+3) building the model using the appropriate model specification function -- here `specify_binomial_model` which assumes the appropriate logit link function and binomial likelihood.
 
 ```{r, message=FALSE}
 library("nimble")
@@ -357,23 +360,6 @@ sim.linexp.fitr<-b_TPC(data = sim.linexp.datr,
 
 `bayesTPC` includes a variety of visualization tools that utilize the `coda` and similar packages to allow checking of MCMC chain convergence, prior/posterior overlap, and marginal and joint posterior distributions of parameters (see @sec-diagL for diagnostic plots for the model fits for the left-skewed data). It also provides summaries of model fits, and maximum *a posteriori* (MAP) estimates of parameters. For our purposes here, the most interesting output is the estimated median posterior TPC and the 95% highest posterior density (HPD) interval of this median across temperatures (@fig-simdatFits). In the simulated data set, we have a good amount of data across a reasonably fine grid of temperature settings. This allows the algorithm to reconstruct the curve and parameters well. 
 
-```{r echo=FALSE, fig.align='center', fig.height=3, fig.width=7.5, warning=FALSE}
-#| label: fig-simdatFits
-#| fig-cap: "Visualization of posterior fits of the LINEX TPC to simulated data from the LINEX TPC model from the left-skewed (LEFT) and right-skewed (RIGHT) models show in @fig-simdat. The median fit is indicated with a solid red line, the 95% HPD interval of the TPC as the dashed blue lines. The true line is indicated with a dotted black linke. Points correspond to 10 virtual replicates, each consisting of $n=20$ 'trials' with the proportion of successes plotted (counts/$n$) at each temperature." 
-
-
-## plot predictions
-par(mfrow=c(1,2), mar = c(4, 4, 1, 2) + 0.1)
-plot(sim.linexp.fitl, legend_position = "topleft", main="", xlab="Temperature (C)")
-lines(ts, inv.logit(mylinexp(ts,  a=0.3, cc=2, Topt=21)), 
-      col=1, lwd=3, lty="dotted")
-
-plot(sim.linexp.fitr, legend_position = "topright", main="", xlab="Temperature (C)")
-lines(ts, inv.logit(mylinexp(ts,  a=-0.3, cc=2, Topt=14)), 
-      col=1, lwd=3, lty="dotted", main="")
-
-```
-
 However, because the model is so flexible, it can miss the mark in circumstances where the experimental design (i.e., the temperature settings) is less ideal. In @fig-simdatFitsMissing we give examples of the sorts of fits that are obtained when the data at a single temperature (here 10$^\circ$C) are removed. For the left skewed data (@fig-simdatFitsMissing, left panel), this removes data in the longer tail. This can have two effects. First (as shown here) we can get a similar fit but with slightly increased uncertainty. Having this data missing can also slow convergence and result in poor fits where the estimated skew is backwards and the peak is assumed close to the area where data is missing (not shown). In contrast, when the data are missing closer to the peak as in the right-skewed data (@fig-simdatFitsMissing, right panel) the right hand tail is still captured adequately, but the uncertainty in the location of the peak increases, which also changes the estimation of the temperature where the drop-off occurs. These are standard issues in estimation of parameters for non-linear functions, as has been noted by other previous (CITE SAMRAAT's PAPER).
 
 ```{r, echo=FALSE, message=FALSE, output=FALSE}
@@ -399,12 +385,22 @@ sim.linexp.fitr.red10<-b_TPC(data = sim.linexp.datr.red10,
                        burn = 10000,
                        niter = 20000)
 ```
-```{r echo=FALSE, fig.align='center', fig.height=3, fig.width=7.5, warning=FALSE}
-#| label: fig-simdatFitsMissing
-#| fig-cap: "Visualization of posterior fits of the LINEX TPC to simulated data from the LINEX TPC model from the left-skewed (LEFT) and right-skewed (RIGHT) models show in @fig-simdat where the data at 10C has been removed. The median fit is indicated with a solid red line, the 95% HPD interval of the TPC as the dashed blue lines. The true line is indicated with a dotted black linke. Points correspond to 10 virtual replicates, each consisting of $n=20$ 'trials' with the proportion of successes plotted (counts/$n$) at each temperature." 
+
+```{r echo=FALSE, fig.align='center', fig.height=6, fig.width=7.5, warning=FALSE}
+#| label: fig-simdatFits
+#| fig-cap: "Visualization of posterior fits of the LINEX TPC to simulated data from the LINEX TPC model from the left-skewed (LEFT) and right-skewed (RIGHT) models show in @fig-simdat. The TOP row shows the complete data set and the BOTTOM row where the data at 10C has been removed. The median fit is indicated with a solid red line, the 95% HPD interval of the TPC as the dashed blue lines. The true line is indicated with a dotted black linke. Points correspond to 10 virtual replicates, each consisting of $n=20$ 'trials' with the proportion of successes plotted (counts/$n$) at each temperature." 
+
 
 ## plot predictions
-par(mfrow=c(1,2), mar = c(4, 4, 1, 2) + 0.1)
+par(mfrow=c(2,2), mar = c(4, 4, 1, 2) + 0.1)
+plot(sim.linexp.fitl, legend_position = "topleft", main="", xlab="Temperature (C)")
+lines(ts, inv.logit(mylinexp(ts,  a=0.3, cc=2, Topt=21)), 
+      col=1, lwd=3, lty="dotted")
+
+plot(sim.linexp.fitr, legend_position = "topright", main="", xlab="Temperature (C)")
+lines(ts, inv.logit(mylinexp(ts,  a=-0.3, cc=2, Topt=14)), 
+      col=1, lwd=3, lty="dotted", main="")
+
 plot(sim.linexp.fitl.red10, legend_position = "topleft", main="", xlab="Temperature (C)")
 lines(ts, inv.logit(mylinexp(ts,  a=0.3, cc=2, Topt=21)), 
       col=1, lwd=3, lty="dotted")
@@ -418,32 +414,50 @@ lines(ts, inv.logit(mylinexp(ts,  a=-0.3, cc=2, Topt=14)),
 
 ## Examples on arthropod TPC data
 
-```{r, message=FALSE, echo=FALSE, fig.align='center', fig.height=3, fig.width=4, warning=FALSE}
+Now we show the performance of the LINEX TPC on experimental data focusing on model selection. The LINEX function proposed here cannot capture symmetric patterns. In many cases theory can guide the choice between a symmetric or asymmetric TPC. For example compound traits, such as probability of emergence of an adult mosquito (which integrates over multiple life stages), are often assumed to have symmetric TPCs. However, for traits for which the choice is less clear cut, or where secondary stressors may impact the trait, one will typically explicitly choose between function forms. Thus we give two examples here -- one where the default assumption would be symmetric and the other which is less clear cut -- where we show how a practitioner could fit multiple functional forms and choose between them using information criteria, specifically WAIC (widely-applicable information criterion). 
 
-dat.moz<-read.csv(file="data/binomial-juvenile-survival-data.csv", header=T)
-dat.moz<-subset(dat.moz, rh==60)
-par(mfrow=c(1,1))
-plot(Trait/n~Temp, data=dat.moz, 
-     xlim=c(10, 45), ylim=c(0,1), main="Juvenile Survival")
+
+### Egg to adult emergence probability for *Anopheles stephensi* 
+
+For our first example, we examine data from @huxley2025beyond on the proportion of *Anopheles stephensi* eggs that successfully develop into adults across 9 temperatures and 3 different relative humidity (RH) levels. This trait aggregates survival and development across multiple life stages (egg, 3 instars, and pupa) into a single metric. TPCs for this trait are typically assumed to be symmetric (e.g., quadratic). We fit the LINEX TPC in the binomial likelihood framework as well as a more standard quadratic GLM to these data. We use WAIC as our metric for model selection. 
+
+We can see in @fig-mozJuvSurvFits that both models visually have reasonable fits at each humidity level, although the relatively flat emergence probability across a wide temperature range seen at 90% RH (bottom two rows) is not particularly well captured by either model. Generally, model selection via WAIC prefers the symmetric quadratic function at most RH (including others not shown here), although at 75% RH the LINEX is favored here (@tab-mozJuvSurvFitsWAIC). 
+
+```{r, message=FALSE, echo=FALSE, fig.align='center', fig.height=3, fig.width=6, warning=FALSE}
+
+set.seed(Sys.time())
+bjs_data <- read.csv("data/binomial-juvenile-survival-data.csv")
+
+RH<-c(45, 75, 90)#unique(bjs_data$rh)
+l<-length(RH)
+
+#par(mfrow=c(1,3), bty="n")
+#for(i in 1:l){
+#  w<-which(bjs_data$rh==RH[i])
+#  plot(Trait/n~Temp, data=bjs_data[w,],
+#       main = paste("RH = ", RH[i], sep=""),
+#       xlim=c(10,45), xlab="Temp (deg C)",
+#       ylim=c(0,1), ylab = "prop emerging",
+#       col = i)
+#}
+
 ```
 
-```{r,  message=FALSE, output=FALSE, echo=FALSE}
-sim.linexp.dat.moz<-list(Trait = dat.moz$Trait,
-                      Temp = dat.moz$Temp, 
-                      n = dat.moz$n)
-
-sim.linexp.fit.moz<-NULL
-sim.linexp.fit.moz<-b_TPC(data = sim.linexp.dat.moz, 
-                      model = "LinExp_binom",
-                      inits = list(a=0.01, Topt=28),
-                      burn = 10000,
-                      niter = 20000)
-```
 
 ```{r,  message=FALSE, output=FALSE, echo=FALSE}
-## fitting to the default quadratic
+sim.linexp.fit.moz<-sim.quad.fit.moz<-NULL
+myWAIC<-data.frame(matrix(NA, nrow=l, ncol=3))
+names(myWAIC) <-c("RH", "LINEX", "QUAD")
 
-zj_fit <- bayesTPC::b_TPC(data = sim.linexp.dat.moz,
+for(i in 1:l){
+  w<-which(bjs_data$rh==RH[i])
+  sim.linexp.fit.moz[[i]]<-b_TPC(data = bjs_data[w,], 
+                          model = "LinExp_binom",
+                          inits = list(a=0.01, Topt=28),
+                          burn = 20000,
+                          niter = 30000)
+  
+  sim.quad.fit.moz[[i]] <- bayesTPC::b_TPC(data = bjs_data[w,],
                           "binomial_glm_quad", 
                           samplerType = "AF_slice",
                           priors = list(B0 = "dunif(-100,100)", 
@@ -451,30 +465,39 @@ zj_fit <- bayesTPC::b_TPC(data = sim.linexp.dat.moz,
                                         B2 = "dunif(-1,1)"),
                           inits = list(B0 = 10, B1 = 1.2, 
                                        B2 = -0.02),
-                          burn = 5000, niter = 15000
-)
+                          burn = 5000, niter = 15000)
+  
+  myWAIC[i,] <- c(RH[i], 
+                  get_WAIC(sim.linexp.fit.moz[[i]])[1],
+                  get_WAIC(sim.quad.fit.moz[[i]])[1])
+                          
+}
 
 ```
 
+```{r, echo=FALSE, fig.align='center', fig.height=8, fig.width=5, warning=FALSE}
+#| label: fig-mozJuvSurvFits
+#| fig-cap: "Visualization of posterior fits of the LINEX TPC and quadratic generalized linear model to data on the proportion of eggs emerging as adults across temperature for three humidity levels (from Huxley et. al, submitted). The median fit is indicated with a solid red line, the 95% HPD interval of the TPC as the dashed blue lines." 
 
-```{r, echo=FALSE, fig.align='center', fig.height=3.5, fig.width=7.5, warning=FALSE}
-## plot predictions
-par(mfrow=c(1,2))
-plot(sim.linexp.fit.moz, ylim=c(0,1), legend=F, main = "LINEX")
-plot(zj_fit, ylim=c(0,1), legend=F, main="Quadratic")
+
+par(mfrow=c(3, 2), bty="n")#, mar = c(4, 4, 1, 2) + 0.1)
+for(i in 1:l){
+  plot(sim.linexp.fit.moz[[i]], ylim=c(0,1), legend=F, 
+       main = paste("LINEX, RH = ", RH[i], sep=""))
+  plot(sim.quad.fit.moz[[i]], ylim=c(0,1), legend=F, 
+       main=paste("Quadratic, RH = ", RH[i], sep=""))
+}
+```
+
+```{r, echo=FALSE, fig.align='center'}
+#| label: tab-mozJuvSurvFitsWAIC
+#| fig-cap: "WAIC values for the LINEX and quandraic generalized linear model fits from @fig-mozJuvSurvFits." 
+ 
+knitr::kable(round(myWAIC, 2))
 ```
 
 
-
-```{r, echo=FALSE, eval=FALSE}
-summary(zj_fit)
-```
-
-```{r, echo=FALSE}
-c( LINEX = get_WAIC(sim.linexp.fit.moz)[1], 
-   quad = get_WAIC(zj_fit)[1] )
-```
-
+\clearpage
 
 # Discussion
 

@@ -69,3 +69,37 @@ for(i in 1:l){
 
 myWAIC
 
+#########################################
+## data on competence, from marta's 2020 aggregation
+
+marta_data <- read.csv("../data/Shocket_etal_2020.csv", stringsAsFactors = TRUE)
+
+## pick out non-empty columns
+w<-which(!is.na(marta_data[1,]))
+marta_data <- marta_data[,w]
+head(marta_data)
+
+## choose 1 mozzie species
+ct_dat<-droplevels(subset(marta_data, interactor1=="Culex tarsalis"))
+summary(ct_dat)
+
+## choose 1 virus
+ct_WNV<-droplevels(subset(ct_dat, interactor2=="WNV"))
+
+Ts<-unique(ct_WNV$interactor1temp)
+l <-length(Ts)
+
+ct_WNV_max<-NULL
+
+for(i in 1:l){
+  tempdat <- subset(ct_WNV, interactor1temp == Ts[i])
+  ww <- which.max(tempdat$totalobstimevalue)
+  if(is.null(ct_WNV_max)) ct_WNV_max <- tempdat[ww,]
+  else ct_WNV_max <- rbind(ct_WNV_max, tempdat[ww,])
+}
+
+ct_WNV_max 
+
+plot(originaltraitvalue ~ interactor1temp, data = ct_WNV_max)
+
+

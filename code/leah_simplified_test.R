@@ -72,7 +72,7 @@ myWAIC
 #########################################
 ## data on competence, from marta's 2020 aggregation
 
-marta_data <- read.csv("../data/Shocket_etal_2020.csv", stringsAsFactors = TRUE)
+marta_data <- read.csv("../data/Shocket_etal_2020.csv")#, stringsAsFactors = TRUE)
 
 ## pick out non-empty columns
 w<-which(!is.na(marta_data[1,]))
@@ -89,13 +89,19 @@ ct_WNV<-droplevels(subset(ct_dat, interactor2=="WNV"))
 Ts<-unique(ct_WNV$interactor1temp)
 l <-length(Ts)
 
+mycols<-c(4,8,18)
 ct_WNV_max<-NULL
 
 for(i in 1:l){
-  tempdat <- subset(ct_WNV, interactor1temp == Ts[i])
+  tempdat<-ww<-NULL
+  tempdat <- droplevels(subset(ct_WNV, interactor1temp == Ts[i]))
+  print(tempdat[,mycols])
   ww <- which.max(tempdat$totalobstimevalue)
-  if(is.null(ct_WNV_max)) ct_WNV_max <- tempdat[ww,]
-  else ct_WNV_max <- rbind(ct_WNV_max, tempdat[ww,])
+  #print(ww)
+  if(is.null(ct_WNV_max)){
+    ct_WNV_max <- tempdat[ww,]
+  }else ct_WNV_max <- rbind(ct_WNV_max, tempdat[ww,])
+  #print(ct_WNV_max[,mycols])
 }
 
 ct_WNV_max 

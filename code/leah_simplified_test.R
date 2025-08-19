@@ -104,8 +104,53 @@ for(i in 1:l){
   #print(ct_WNV_max[,mycols])
 }
 
-ct_WNV_max 
+ct_WNV_max[,mycols]
 
 plot(originaltraitvalue ~ interactor1temp, data = ct_WNV_max)
 
+## not sure about the correct number of mozzies
+ns<-c(20,40, 20, 40, 20, 20)
+success <- round(ct_WNV_max$originaltraitvalue*ns)
+
+
+ct.WNV.dat<-list(Trait = success,
+                 Temp = ct_WNV_max$interactor1temp, 
+                 n = ns)
+
+ct.WNV.linexp.fit<-ct.WNV.quad.fit<-NULL
+myWAIC<-data.frame(matrix(NA, nrow=1, ncol=2))
+names(myWAIC) <-c("LINEX", "QUAD")
+
+ct.WNV.linexp.fit<-b_TPC(data = ct.WNV.dat, 
+                                 model = "LinExp_binom",
+                                 inits = list(a=0.01, Topt=28),
+                                 burn = 15000,
+                                 niter = 25000)
+  
+ct.WNV.quad.fit<- bayesTPC::b_TPC(data = ct.WNV.dat,
+                                  "binomial_glm_quad",
+                                  samplerType = "AF_slice",
+                                  priors = list(B0 = "dunif(-100,100)",
+                                                B1 = "dunif(-10,10)",
+                                                B2 = "dunif(-1,1)"),
+                                  inits = list(B0 = 10, B1 = 1.2, 
+                                               B2 = -0.02),
+                                  burn = 5000, niter = 15000)
+  
+par(mfrow=c(1, 2), bty="n")
+  plot(ct.WNV.linexp.fit, 
+       ylim=c(0,1), 
+       legend=F, 
+       main ="LINEX")
+  plot(ct.WNV.quad.fit, 
+       ylim=c(0,1), 
+       legend=F, 
+       main="Quadratic")
+  
+  myWAIC<- c(LINEX = get_WAIC(ct.WNV.linexp.fit)[1],
+             QUAD = get_WAIC(ct.WNV.quad.fit)[1])
+  
+
+
+myWAIC
 

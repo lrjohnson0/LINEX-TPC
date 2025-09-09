@@ -1,5 +1,5 @@
 ---
-title: "Modeling asymmetric Thermal Performance Curves for proportion  data"
+title: "Modeling asymmetric Thermal Performance Curves for proportion data"
 date: today
 author:
   - name: 
@@ -37,8 +37,9 @@ author:
   - name: 
       given: Sadie J.
       family: Ryan
-    id: ph
-    email: 
+    id: sj
+orcid: 0000-0002-4308-6321
+    email: sjryan@ufl.edu
     affiliation: 
       - id: UF
         name: University of Florida
@@ -89,7 +90,7 @@ mylinexp.up<-function(t, a=0.3, cc=1, Topt=3){
 
 # Introduction
 
-It is widely accepted that ambient temperature impacts a variety of functional  traits, such as fecundity, development, or survival, especially in ectotherms. Thermal biologists often seek to quantify the impact of temperature on traits through empirical studies. One approach is to hold organisms at an array of fixed temperatures and measure focal traits at each of these temperatures. The pattern of the trait values across temperature are then often quantified using Thermal Performance Curve [TPCs, @huey1979integrating;@schoolfield1981non; @amarasekare2012framework]. These TPCs are usually functions that are non-negative (as measured traits are typically non-negative). They are often hump- or u-shaped, and may be either symmetric or asymmetric (see @amarasekare2012framework and @gajewski2021predicting for a range of examples). 
+Ambient temperature impacts a variety of functional  traits, such as fecundity, development, or survival, especially in ectotherms REF. Quantifying the impact of temperature on traits is usually achieved through empirical, laboratory based experimental studies. One approach is to hold organisms at an array of fixed temperatures and measure focal traits at each of these temperatures. The pattern of the trait values across temperature are then often quantified using Thermal Performance Curve [TPCs, @huey1979integrating;@schoolfield1981non; @amarasekare2012framework]. These TPCs are usually functions that are non-negative (as measured traits are typically non-negative). They are often hump- or u-shaped, and may be either symmetric or asymmetric (see @amarasekare2012framework and @gajewski2021predicting for a range of examples). 
 
 Often the observed trait measurements (or the average of these) may reasonably be assumed to be loosely normally distributed at a particular temperature, with the mean at that temperature described by a TPC. For example, across moderate temperatures mosquitoes often lay many eggs at once, so these counts (or the average across times/individuals) may be approximately normal. In these cases, standard fitting approaches including least squares may be used to fit the TPCs to data [@padfield2021rtpc]. Further, as long as the data may reasonably be assumed to be non-negative and likely unbounded from above, the general approach may still work. For example, if data are counts of events, such as eggs laid, then the standard TPC can be used, but linked to other distributions, such as Poisson or a truncated normal, in order to better describe the variability of the data around the assumed TPC. 
 

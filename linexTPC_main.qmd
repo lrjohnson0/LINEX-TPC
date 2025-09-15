@@ -38,7 +38,7 @@ author:
       given: Sadie J.
       family: Ryan
     id: sj
-orcid: 0000-0002-4308-6321
+    orcid: 0000-0002-4308-6321
     email: sjryan@ufl.edu
     affiliation: 
       - id: UF
@@ -284,7 +284,7 @@ lines(ts, inv.logit(mylinexp(ts,  a=-0.3, cc=2, Topt=14)),
 
 ## Bayesian inference for LINEX TPC using `bayesTPC`
 
-In R and most other common statistical software, the sort of extension to GLMs used here are not easy to implement by default. Typically a user would need to be able to manually specify the predictor, link, and likelihood. This must then be  fed into an appropriate optimization routine (to perform maximum likelihood estimation of parameters), or priors can additionally be specified and Bayesian estimation can be performed (e.g., via Markov-chain Monte Carlo). This typically requires some specialist knowledge. However, the package `bayesTPC` [@sorek2025] in R [@cranR] allows specification of TPCs and model formulations in a relatively straightforward way. Thus we use this package and it's machinery to build a simple example pipeline.  
+In R and most other common statistical software, the sort of extensions to GLMs used here are not easy to implement by default. Typically a user would need to be able to manually specify the predictor, link, and likelihood. This must then be inputted into an appropriate optimization routine (to perform maximum likelihood estimation of parameters), or priors could additionally be specified and Bayesian estimation performed (e.g., via Markov-chain Monte Carlo). This typically requires some specialist knowledge. However, the package `bayesTPC` [@sorek2025] in R [@cranR] allows for specification of TPCs and model formulations in a relatively straightforward way. Thus we use this package and its machinery to build a straightforward example pipeline.  
 
 Building a model in `bayesTPC` requires three steps: 
 

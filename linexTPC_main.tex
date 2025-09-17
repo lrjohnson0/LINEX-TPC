@@ -1,0 +1,1033 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+%
+\documentclass[
+]{article}
+
+\usepackage{amsmath,amssymb}
+\usepackage{setspace}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else  
+    % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin = 1in]{geometry}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\setcounter{secnumdepth}{5}
+% Make \paragraph and \subparagraph free-standing
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{241,243,245}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.40,0.45,0.13}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\BuiltInTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\ExtensionTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.28,0.35,0.67}{#1}}
+\newcommand{\ImportTok}[1]{\textcolor[rgb]{0.00,0.46,0.62}{#1}}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\NormalTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.07,0.07,0.07}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+% definitions for citeproc citations
+\NewDocumentCommand\citeproctext{}{}
+\NewDocumentCommand\citeproc{mm}{%
+  \begingroup\def\citeproctext{#2}\cite{#1}\endgroup}
+\makeatletter
+ % allow citations to break across lines
+ \let\@cite@ofmt\@firstofone
+ % avoid brackets around text for \cite:
+ \def\@biblabel#1{}
+ \def\@cite#1#2{{#1\if@tempswa , #2\fi}}
+\makeatother
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newenvironment{CSLReferences}[2] % #1 hanging-indent, #2 entry-spacing
+ {\begin{list}{}{%
+  \setlength{\itemindent}{0pt}
+  \setlength{\leftmargin}{0pt}
+  \setlength{\parsep}{0pt}
+  % turn on hanging indent if param 1 is 1
+  \ifodd #1
+   \setlength{\leftmargin}{\cslhangindent}
+   \setlength{\itemindent}{-1\cslhangindent}
+  \fi
+  % set entry spacing
+  \setlength{\itemsep}{#2\baselineskip}}}
+ {\end{list}}
+\usepackage{calc}
+\newcommand{\CSLBlock}[1]{\hfill\break\parbox[t]{\linewidth}{\strut\ignorespaces#1\strut}}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+
+\usepackage{lineno}\linenumbers
+\usepackage{fvextra}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\AtBeginDocument{%
+\ifdefined\contentsname
+  \renewcommand*\contentsname{Table of contents}
+\else
+  \newcommand\contentsname{Table of contents}
+\fi
+\ifdefined\listfigurename
+  \renewcommand*\listfigurename{List of Figures}
+\else
+  \newcommand\listfigurename{List of Figures}
+\fi
+\ifdefined\listtablename
+  \renewcommand*\listtablename{List of Tables}
+\else
+  \newcommand\listtablename{List of Tables}
+\fi
+\ifdefined\figurename
+  \renewcommand*\figurename{Figure}
+\else
+  \newcommand\figurename{Figure}
+\fi
+\ifdefined\tablename
+  \renewcommand*\tablename{Table}
+\else
+  \newcommand\tablename{Table}
+\fi
+}
+\@ifpackageloaded{float}{}{\usepackage{float}}
+\floatstyle{ruled}
+\@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
+\floatname{codelisting}{Listing}
+\newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
+\makeatother
+\makeatletter
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
+\makeatother
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\usepackage{bookmark}
+
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same} % disable monospaced font for URLs
+\hypersetup{
+  pdftitle={Modeling asymmetric Thermal Performance Curves for proportion data},
+  pdfauthor={Leah R. Johnson; Catherine Lippi; Paul J. Huxley; Sadie J. Ryan},
+  pdfkeywords={Thermal Performance Curves, binomial data},
+  colorlinks=true,
+  linkcolor={blue},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={Blue},
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Modeling asymmetric Thermal Performance Curves for proportion
+data}
+\author{Leah R. Johnson \and Catherine Lippi \and Paul J.
+Huxley \and Sadie J. Ryan}
+\date{2025-09-16}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+something here
+\end{abstract}
+
+\setstretch{2}
+\section{Introduction}\label{introduction}
+
+Ambient temperature impacts a variety of functional traits, such as
+fecundity, development, or survival, especially in ectotherms REF.
+Quantifying the impact of temperature on traits is usually achieved
+through empirical, laboratory based experimental studies. One approach
+is to hold organisms at an array of fixed temperatures and measure focal
+traits at each of these temperatures. The pattern of the trait values
+across temperature are then often quantified using Thermal Performance
+Curve (TPCs, Huey and Stevenson 1979; Schoolfield, Sharpe, and Magnuson
+1981; Amarasekare and Savage 2012). These TPCs are usually functions
+that are non-negative (as measured traits are typically non-negative).
+They are often hump- or u-shaped, and may be either symmetric or
+asymmetric (see Amarasekare and Savage (2012) and Gajewski et al. (2021)
+for a range of examples).
+
+Often the observed trait measurements (or the average of these) may
+reasonably be assumed to be roughly normally distributed at a particular
+temperature, with the mean at that temperature described by a TPC. For
+example, across moderate temperatures mosquitoes often lay many eggs at
+once, so these counts (or the average across times/individuals) may be
+approximately normal. In these cases, standard fitting approaches
+including least squares may be used to fit the TPCs to data (Padfield,
+O'Sullivan, and Pawar 2021). Further, as long as the data may reasonably
+be assumed to be non-negative and likely unbounded from above, the
+general approach may still work. For example, if data are counts of
+events, such as eggs laid, then the standard TPC can be used, but linked
+to other distributions, such as Poisson or a truncated normal, in order
+to better describe the variability of the data around the assumed TPC.
+
+However, this approach is not ideal for data which are bounded.
+Specifically, proportion data, where the number of ``successes'' within
+a given number of trials are recorded, are poorly captured by the
+standard TPC framework. This is because two conditions must hold in
+order for these types of data to be approximated by a normal
+distribution. First the probability of success must not be ``too close''
+to either 1 or zero. This is problematic in the current TPC framework
+because we often specifically want the TPC to be close to these limits
+at particular temperatures. Further, the number of trials must be
+sufficiently large, with the sample size needing to be even higher the
+closer that the success probability is to either zero or 1. If these
+conditions do not hold, the point estimate of the mean may be
+reasonable, but any uncertainty bounds will be problematic. For example,
+if the sample size is small, the error may be poorly estimated by the
+normal distribution. Additionally, when the uncertainty is problematic
+in the TPC where probabilities are near 1 or 0, the estimated ranges may
+not correspond to appropriate probabilities (i.e., they include values
+greater than 1 or less than 0). Thus, while non-linear least squares
+(NLLS) and other similar fitting approaches can be used to obtain point
+estimates of TPC parameters, and estimate the resulting mean response,
+the uncertainty bounds for any parameters and the associated TPC are not
+meaningful. In addition to the complications of fitting needs, TPCs, in
+practice, are often constrained by the number of measurements taken in
+an experiment, along both axes, meaning we wish to minimize the number
+of parameters.
+
+An alternative approach is to fit the binomial success data directly
+using generalized linear models (GLMs). In this approach, the data are
+recorded as the number of successes with the corresponding number of
+trials instead of as a proportion. A ``link'' between the modeled
+probability, formulated in terms of a linear model, and these binomial
+outcomes is assumed. This approach is flexible and straightforward;
+however, because of the requirement that the underlying model be linear
+in the parameters (e.g., lines, polynomial terms or similar), a standard
+GLM framework cannot capture the asymmetric patterns common in thermal
+ecology.
+
+In this short note we introduce a simple extension to the standard GLM
+formulation of TPCs for binomial data using a simple non-linear
+predictor function. This predictor function is highly flexible, allowing
+a range of shapes (concave up or down, left or right skewed), has only 3
+parameters to estimate, and is appropriate for use with a binomial
+modeling approach. First, we introduce the function and describe the
+parameters and interpretation. Second, we show how to implement it as a
+TPC to fit trait data in a Bayesian framework using the package
+\texttt{bayesTPC} in R. This allows us to accommodate the non-linear
+function together with the appropriate link and likelihood. Third, we
+give examples of fitting the TPC to simulated data, to explore some
+subtleties inherent in analysis of these kinds of data. Fourth, we use
+this to fit data across a sampling of arthropod thermal traits. Finally,
+we discuss the use of the function more generally.
+
+\section{Methods}\label{methods}
+
+\subsection{The Generalized Linear Modeling
+framework}\label{the-generalized-linear-modeling-framework}
+
+A Generalized Linear Model (GLM) is a modeling framework that builds on
+linear regression modelling, a foundational model of statistics. We can
+write a multiple linear regression (MLR) model mathematically as \[
+Y_i   = \beta_0 + \beta_1 X_{i1} + \cdots
++ \beta_d X_{id}  + \varepsilon_i, ~~~~  \varepsilon_i \stackrel{\mathrm{iid}}{\sim} \mathcal{N}(0, \sigma^2).
+\] where \(Y_i\) is the \(i^{\mathrm{th}}\) response variable,
+\(X_{i1} \dots X_{id}\) are the corresponding \(d\) predictor variables,
+the \(\beta\)s are the regression coefficients, and \(\varepsilon\) is
+the normally distributed noise with variance \(\sigma^2\). We can think
+of an MLR model as having three parts:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  The \textbf{\emph{systematic}} component: the explanatory variables
+  are used to construct a linear predictor
+  \(\eta_i = \beta_0 + \beta_1 X_{i1} + \cdots + \beta_d X_{id}.\)
+\item
+  The \textbf{\emph{random}} component: \(Y_1,\dots,Y_n\) are normally
+  distributed with \(Y_i\) having mean \(\mu_i\) and variance
+  \(\sigma^2\).
+\item
+  The \textbf{\emph{link}} between the random and systematic components:
+  \(\mu_i = \eta_i, \;\;\;\;\; i=1,\dots,n\).
+\end{enumerate}
+
+GLMs extend linear models by changing two requirements of the linear
+model. First, they allow different classes of distributions for the
+response variables. The most commonly used non-Normal distributions for
+GLMs are the Binomial (used for binary data) and the Poisson (used for
+positive counts). Second, they allow a more general link function: \[
+\eta_i = g(\mu_i), \;\;\;\;\; i=1,\dots,n,
+\] where \(g\) is a strictly increasing, twice differentiable function.
+Each family has a standard, or ``canonical'' link function. For example,
+the Poisson uses a log-link.
+
+In this paper, we are interested in binary response data, that is data
+where the response \(Y\) is a binary variable (taking the value \(0\) or
+\(1\)). In data on arthropod thermal traits, a common example is whether
+an egg that is laid successfully becomes an adult. Then a ``success''
+(emergence of the adult) corresponds to the response \(Y=1\), and is
+\(Y=0\) to a failure. In this case we would use a logistic GLM such that
+the number of observed successes, \(n_i\), in a fixed number, \(N\),
+trials is modeled as a Binomial random variable, and assuming a logit
+link to the linear predictor, that is:
+\begin{equation}\phantomsection\label{eq-logistic}{
+n_i \sim \mathrm{Bin}(p_i, N); ~~~ p_i = \frac{\exp[\eta_i]}{1+\exp[\eta_i]}; ~~~ \eta_i = \beta_0 + \beta_1 X_{i1} + \cdots + \beta_d X_{id}. 
+}\end{equation} where again \(\eta_i\) is a linear predictor constructed
+as above.
+
+In the standard GLM framework the linear predictor has two properties
+that are important. First, it has to give possible responses across the
+whole real line -- that is when you plug in arbitrary values of
+predictors it can give values from -\infty{} to \infty{}. It is this
+property that necessitates the link function, which transforms the
+linear predictor to be within the necessary bounds of the probability
+model (between 0 and 1 for the binomial). The second property is that
+the predictor is linear in the \emph{coefficients} of the predictor
+variables. Thus one can include polynomial terms, for example, because
+although one is taking powers of the variables, there are no powers (or
+other functions) of the coefficients in the predictor equation.
+
+\subsection{The LINEX TPC}\label{the-linex-tpc}
+
+From a theoretical perspective, it is possible to instead use a
+non-linear predictor -- that is, one that fulfills the first requirement
+but not the second. This is not something that is typically done unless
+the researcher has a specific reason to desire a different shape than is
+easy to construct with a linear predictor. In our case, we wish to be
+able to construct a predictor that is hump/u-shaped (like a quadratic)
+and asymmetric (unlike a quadratic) using as few parameters as possible.
+
+One possible solution is to adapt an existing functional form. Linear
+Exponential (LINEX) loss functions are fairly common as constraints in
+the economic literature (e.g., Parsian and Kirmani (2002)) and within
+the statistics literature as an alternative to quadratic loss when
+estimating model parameters (e.g., Singh, Gupta, and Upadhyay (2002), Li
+et al. (2007), Doostparast, Ahmadi, and Ahmadi (2013)). The functional
+form can be modified and used as a TPC in place of a linear predictor to
+generalize the GLM framework introduced above. We define the non-linear
+LINEX TPC \emph{predictor} to be
+\begin{equation}\phantomsection\label{eq-LINEX-TPC1}{
+f(T) = - e^{(-a( T_{\mathrm{opt}} - T ) )} + a ( T - T_{\mathrm{opt}}) + c 
+}\end{equation} where \(T_{\mathrm{opt}}\) determines the location of
+the optimum of the function, \(c - 1\) is the height of the function at
+the maximum, and \(a\) governs a combination of the curvature (based on
+the magnitude of \(a\)) and skew. The direction of skew is determined by
+the sign of \(a\): if \(a>0\) it is left skewed and if \(a<0\) it is
+right skewed (Figure~\ref{fig-LINEX}, top and middle). The function can
+be modified slightly to enable a concave up shape, with the value of
+\(a\) still determining the skew,
+\begin{equation}\phantomsection\label{eq-LINEX-TPC2}{
+f_{\mathrm{up}}(T) = e^{(-a( T_{\mathrm{opt}} - T ) )} - a ( T - T_{\mathrm{opt}}) + c  
+}\end{equation} where the parameters are as for the concave down
+version, except that value at \(T_{\mathrm{opt}}\) is now the
+\emph{minimum} with a value \(f_{\mathrm{up}}(T_{\mathrm{opt}}) = c+1\)
+(Figure~\ref{fig-LINEX}, bottom row). Either
+Equation~\ref{eq-LINEX-TPC1} or Equation~\ref{eq-LINEX-TPC2} can take
+the place of the linear predictor in the logistic model
+(Equation~\ref{eq-logistic}). We show the inverse logit transform of
+these equations (corresponding to the probability of success) in the
+right-hand panels of Figure~\ref{fig-LINEX}.
+
+\begin{figure}
+
+\centering{
+
+\includegraphics{linexTPC_main_files/figure-pdf/fig-LINEX-1.pdf}
+
+}
+
+\caption{\label{fig-LINEX}Examples of shapes that can be generated by
+the LINEX TPC, together with a virtical line indicating the location of
+the optimum. In each case, the left panel shows the shape of the
+non-linear predictor and the right panel shows the inverse logit
+transformed predictor that gives the probability of success. TOP:
+Left-skewed, \(T_{\mathrm{opt}}=20\), \(a = 0.2\), \(c=2\). MIDDLE:
+Right-skewed, \(T_{\mathrm{opt}}=7\), \(a = -0.25\), \(c=2\). BOTTOM:
+concave-up, \(T_{\mathrm{opt}}=14\), \(a = 0.2\), \(c=-1\).}
+
+\end{figure}%
+
+We can simulate data from this model to use for testing in a
+straightforward manner. We define the inverse logit transform of the
+LINEX function as the probability, \(p\), for the target binomial
+distribution. We first choose parameters for the LINEX function and the
+number of trials in an experiment (e.g., the number of eggs). We then
+draw the number of ``successes'' (eggs that hatch) using the
+\texttt{rbinom} function in R with the \(p\) set as the value of \(p\)
+at the temperature setting, and repeat this across a set number of
+replicates (Figure~\ref{fig-simdat}). We will use these simulated data
+to test the inference functions in the next section.
+
+\begin{figure}
+
+\centering{
+
+\includegraphics{linexTPC_main_files/figure-pdf/fig-simdat-1.pdf}
+
+}
+
+\caption{\label{fig-simdat}Visualization of simulated data from the
+LINEX TPC model, together with inverse transform of the assumed
+functional response (blue lines). Points correspond to 10 virtual
+replicates, each consisting of \(n=20\) `trials' with the proportion of
+successes plotted (counts/\(n\)) at each tempearture. Temperature values
+are jittered slightly for visualization purposes. LEFT: Left-skewed
+simulation, dark blue line, \(T_{\mathrm{opt}}=21\), \(a = 0.3\),
+\(c=2\). RIGHT: Right-skewed simulation, light blue line,
+\(T_{\mathrm{opt}}=14\), \(a = -0.3\), \(c=2\)}
+
+\end{figure}%
+
+\subsection{\texorpdfstring{Bayesian inference for LINEX TPC using
+\texttt{bayesTPC}}{Bayesian inference for LINEX TPC using bayesTPC}}\label{bayesian-inference-for-linex-tpc-using-bayestpc}
+
+In R and most other common statistical software, the sort of extensions
+to GLMs used here are not easy to implement by default. Typically a user
+would need to be able to manually specify the predictor, link, and
+likelihood. This must then be inputted into an appropriate optimization
+routine (to perform maximum likelihood estimation of parameters), or
+priors could additionally be specified and Bayesian estimation performed
+(e.g., via Markov-chain Monte Carlo). This typically requires some
+specialist knowledge. However, the package \texttt{bayesTPC} (Sorek et
+al. 2025) in R (R Core Team 2025) allows for specification of TPCs and
+model formulations in a relatively straightforward way. Thus we use this
+package and its machinery to build a straightforward example pipeline.
+
+Building a model in \texttt{bayesTPC} requires three steps:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi})}
+\tightlist
+\item
+  defining a named TPC with corresponding formula (as an R
+  ``expression'')
+\item
+  defining priors for all parameters that will be fitted as a vector
+  with named elements
+\item
+  building the model using the appropriate model specification function
+  -- here \texttt{specify\_binomial\_model} which assumes the
+  appropriate logit link function and binomial likelihood.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(}\StringTok{"nimble"}\NormalTok{)}
+\FunctionTok{library}\NormalTok{(}\StringTok{"bayesTPC"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{my\_name}\OtherTok{\textless{}{-}} \StringTok{"LinExp\_binom"}
+\NormalTok{LinExp\_formula }\OtherTok{\textless{}{-}} \FunctionTok{expression}\NormalTok{(}\SpecialCharTok{{-}}\FunctionTok{exp}\NormalTok{( }\SpecialCharTok{{-}}\NormalTok{a}\SpecialCharTok{*}\NormalTok{(Topt}\SpecialCharTok{{-}}\NormalTok{Temp) ) }\SpecialCharTok{+}\NormalTok{ a}\SpecialCharTok{*}\NormalTok{(Temp}\SpecialCharTok{{-}}\NormalTok{Topt) }\SpecialCharTok{+}\NormalTok{ cc)}
+\NormalTok{LinExp\_priors }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{( }\AttributeTok{cc =} \StringTok{"dexp(0.1)"}\NormalTok{,}
+                    \AttributeTok{a =} \StringTok{"dnorm(0, 1)"}\NormalTok{,}
+                    \AttributeTok{Topt  =} \StringTok{"dnorm(25, 1/1000)"}
+\NormalTok{                    )}
+\NormalTok{LinExp\_binom }\OtherTok{\textless{}{-}} \FunctionTok{specify\_binomial\_model}\NormalTok{( my\_name,}
+                                        \AttributeTok{parameters =}\NormalTok{ LinExp\_priors,}
+                                        \AttributeTok{formula =}\NormalTok{ LinExp\_formula}
+\NormalTok{                                        )}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+Model type 'LinExp_binom' can now be accessed using other bayesTPC functions. Use `reset_models()` to reset back to defaults.
+\end{verbatim}
+
+These functions build the model in the BUGS language. This resulting
+model can be examined here:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\FunctionTok{configure\_model}\NormalTok{(LinExp\_binom))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+{
+    for (i in 1:N){
+        logit(m[i]) <- ( -exp(-a * (Topt - Temp[i])) + a * (Temp[i] - Topt) + cc )
+        Trait[i] ~ dbinom(m[i], n[i])
+    }
+    cc ~ dexp(0.1)
+    a ~ dnorm(0, 1)
+    Topt ~ dnorm(25, 1/1000)
+}
+\end{verbatim}
+
+Notice that the TPC expression is defined in terms of the temperature,
+which is notated as \texttt{Temp}. This is required by \texttt{bayesTPC}
+to ensure that all follow-on functions work properly. Parameters can
+otherwise be defined as the user prefers, although it is recommended
+that parameters not share names with functions or variables that are
+used elsewhere in R (for example \texttt{c} which is the concatenate
+function in R, or \texttt{T} and \texttt{F} which correspond to
+\texttt{TRUE} and \texttt{FALSE}).
+
+\section{Results}\label{results}
+
+\subsection{Performance on simulated
+data}\label{performance-on-simulated-data}
+
+The \texttt{bayesTPC} package requires that data be formatted as a list
+with elements called ``Trait'' (the response being modeled) and ``Temp''
+(the corresponding temperature at which the trait is measured.
+Additionally, for fitting binomial models, as we are doing here, the
+data list should include ``n'', the number of trials of which the
+``Trait'' is the number of successes in that trial.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sim.linexp.datl}\OtherTok{\textless{}{-}}\FunctionTok{list}\NormalTok{(}\AttributeTok{Trait =}\NormalTok{ datl}\SpecialCharTok{$}\NormalTok{counts,}
+                     \AttributeTok{Temp =}\NormalTok{ datl}\SpecialCharTok{$}\NormalTok{Temp, }
+                     \AttributeTok{n =}\NormalTok{ datl}\SpecialCharTok{$}\NormalTok{n)}
+\NormalTok{sim.linexp.datr}\OtherTok{\textless{}{-}}\FunctionTok{list}\NormalTok{(}\AttributeTok{Trait =}\NormalTok{ datr}\SpecialCharTok{$}\NormalTok{counts,}
+                      \AttributeTok{Temp =}\NormalTok{ datr}\SpecialCharTok{$}\NormalTok{Temp, }
+                      \AttributeTok{n =}\NormalTok{ datr}\SpecialCharTok{$}\NormalTok{n)}
+\end{Highlighting}
+\end{Shaded}
+
+Once the data have been formatted and our bespoke LINEX TPC model
+defined, we use the built in function \texttt{b\_TPC} to fit the model.
+There are various options that can be included. Here we specify a
+sampler type ``AF\_slice'' (that works well for posteriors that may have
+high correlation, as TPCs often do), as well as a burn in length and
+number of total iterations of the MCMC to keep (for more details about
+possibilities see CITE). We also give an example of specifying a
+starting value for the sampler. Although this is not strictly necessary,
+it can speed up convergence.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sim.linexp.fitl}\OtherTok{\textless{}{-}}\FunctionTok{b\_TPC}\NormalTok{(}\AttributeTok{data =}\NormalTok{ sim.linexp.datl, }
+                      \AttributeTok{model =} \StringTok{"LinExp\_binom"}\NormalTok{, }
+                      \AttributeTok{samplerType =} \StringTok{"AF\_slice"}\NormalTok{,}
+                      \AttributeTok{inits =} \FunctionTok{list}\NormalTok{(}\AttributeTok{a=}\FloatTok{0.1}\NormalTok{, }\AttributeTok{Topt=}\DecValTok{17}\NormalTok{),}
+                      \AttributeTok{burn =} \DecValTok{10000}\NormalTok{,}
+                      \AttributeTok{niter =} \DecValTok{20000}\NormalTok{)}
+
+\NormalTok{sim.linexp.fitr}\OtherTok{\textless{}{-}}\FunctionTok{b\_TPC}\NormalTok{(}\AttributeTok{data =}\NormalTok{ sim.linexp.datr, }
+                       \AttributeTok{model =} \StringTok{"LinExp\_binom"}\NormalTok{, }
+                       \AttributeTok{inits =} \FunctionTok{list}\NormalTok{(}\AttributeTok{a=}\SpecialCharTok{{-}}\FloatTok{0.1}\NormalTok{, }\AttributeTok{Topt=}\DecValTok{15}\NormalTok{),}
+                       \AttributeTok{burn =} \DecValTok{10000}\NormalTok{,}
+                       \AttributeTok{niter =} \DecValTok{20000}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+The \texttt{bayesTPC} package includes a variety of visualization tools
+that utilize \texttt{coda} (Plummer et al. 2006) and similar packages to
+allow checking of MCMC chain convergence, prior/posterior overlap, and
+marginal and joint posterior distributions of parameters (see
+Section~\ref{sec-diagL} for diagnostic plots for the model fits for the
+left-skewed data). It also provides summaries of model fits, and maximum
+\emph{a posteriori} (MAP) estimates of parameters. For our purposes
+here, the most interesting output is the estimated median posterior TPC
+and the 95\% highest posterior density (HPD) interval of this median
+across temperatures (Figure~\ref{fig-simdatFits}). In the simulated data
+set, we have a good amount of data across a reasonably fine grid of
+temperature settings. This allows the algorithm to reconstruct the curve
+and parameters well.
+
+It is important to note that as the model is so flexible, it can miss
+the mark in cases where the experimental design (i.e., the temperature
+settings) is less than ideal. In Figure~\ref{fig-simdatFits} (bottom two
+panels) we give examples of fits obtained when the data at a single
+temperature (here 10\(^\circ\)C) are removed. For the left skewed data
+(Figure~\ref{fig-simdatFits}, bottom left panel), this removes data in
+the longer tail, which can result in two effects. First (as shown here)
+we can get a similar fit, with slightly increased uncertainty. Having
+this data missing can also slow convergence and result in poor fits
+where the estimated skew is backwards and the peak is close to the range
+of the missing data (not shown). In contrast, when the data are missing
+closer to the peak as in the right-skewed data
+(Figure~\ref{fig-simdatFits}, bottom right panel) the right hand tail is
+still captured adequately, but the uncertainty in the location of the
+peak increases, which also changes the estimation of the temperature
+where the drop-off occurs. These are standard issues in estimation of
+parameters for non-linear functions if insufficient predictor settings
+are used, as has been noted by other authors (CITE SAMRAAT's PAPER).
+
+\begin{figure}
+
+\centering{
+
+\includegraphics{linexTPC_main_files/figure-pdf/fig-simdatFits-1.pdf}
+
+}
+
+\caption{\label{fig-simdatFits}Visualization of posterior fits of the
+LINEX TPC to simulated data from the LINEX TPC model from the
+left-skewed (LEFT) and right-skewed (RIGHT) models show in
+Figure~\ref{fig-simdat}. The TOP row shows the complete data set and the
+BOTTOM row where the data at 10C has been removed. The median fit is
+indicated with a solid red line, the 95\% HPD interval of the TPC as the
+dashed blue lines. The true line is indicated with a dotted black linke.
+Points correspond to 10 virtual replicates, each consisting of \(n=20\)
+`trials' with the proportion of successes plotted (counts/\(n\)) at each
+temperature.}
+
+\end{figure}%
+
+\subsection{Examples on arthropod TPC
+data}\label{examples-on-arthropod-tpc-data}
+
+Now we show the performance of the LINEX TPC on experimental data
+focusing on model selection. In many cases theory can guide the choice
+between a symmetric or asymmetric TPC. The LINEX function proposed here
+cannot capture symmetric patterns, so the user must consider assumptions
+and compare carefully. For example, compound traits, such as the
+probability of emergence of an adult mosquito (which integrates over
+multiple life stages), are often assumed to have symmetric TPCs.
+However, for traits for which the choice is less clear cut, or where
+secondary stressors may impact the trait, one will typically explicitly
+choose between functional forms. Thus we give two examples here -- one
+where the default assumption would be symmetric and the other which is
+less clear cut -- where we show how the user could fit multiple
+functional forms and choose between them using information criteria,
+specifically WAIC (widely-applicable information criterion).
+
+\subsubsection{\texorpdfstring{Egg to adult emergence probability for
+\emph{Anopheles
+stephensi}}{Egg to adult emergence probability for Anopheles stephensi}}\label{egg-to-adult-emergence-probability-for-anopheles-stephensi}
+
+For our first example, we examine data from Huxley et al. (2025) on the
+proportion of \emph{Anopheles stephensi} eggs that successfully develop
+into adults across 9 temperatures and 3 different relative humidity (RH)
+levels. This trait aggregates survival and development across multiple
+life stages (egg, 3 instars, and pupa) into a single metric. TPCs for
+this trait are typically assumed to be symmetric (e.g., quadratic). We
+fit the LINEX TPC in the binomial likelihood framework as well as a more
+standard quadratic GLM to these data. We use WAIC as our metric for
+model selection.
+
+\begin{figure}
+
+\centering{
+
+\includegraphics{linexTPC_main_files/figure-pdf/fig-mozJuvSurvFits-1.pdf}
+
+}
+
+\caption{\label{fig-mozJuvSurvFits}Visualization of posterior fits of
+the LINEX TPC and quadratic generalized linear model to data on the
+proportion of eggs emerging as adults across temperature for three
+humidity levels (from Huxley et. al, submitted). The median fit is
+indicated with a solid red line, the 95\% HPD interval of the TPC as the
+dashed blue lines.}
+
+\end{figure}%
+
+\begin{longtable}[]{@{}rrr@{}}
+
+\toprule\noalign{}
+RH & LINEX & QUAD \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+45 & 368.42 & 275.39 \\
+75 & 285.62 & 296.98 \\
+90 & 462.46 & 639.60 \\
+
+
+\caption{\label{tbl-mozJuvSurvFitsWAIC}WAIC values for the LINEX and
+quandraic generalized linear model fits from
+Figure~\ref{fig-mozJuvSurvFits}.}
+
+\tabularnewline
+\end{longtable}
+
+We can see in Figure~\ref{fig-mozJuvSurvFits} that both models visually
+have reasonable fits at each humidity level, although the relatively
+flat emergence probability across a wide temperature range seen at 90\%
+RH (bottom two rows) is not particularly well captured by either model.
+Generally, model selection via WAIC prefers the symmetric quadratic
+function at most RH (including others not shown here), although at 75\%
+RH the LINEX is favored here (Table~\ref{tbl-mozJuvSurvFitsWAIC}).
+
+\subsubsection{Another set of trait
+data}\label{another-set-of-trait-data}
+
+Here we will put another set of the trait data, and analysis, focusing
+on one that is more likely to be asymmetric! Yay!
+
+\clearpage
+
+\section{Discussion}\label{discussion}
+
+In this paper we introduce the use of the LINEX function, a fairly
+simple non-linear function that can serve as an asymmetric TPC in a
+GLM-style modeling approach. This approach can be used model bounded
+data that are not well captured by a more classic piece-wise continuous
+bounded TPC with normal (or approximately normal) noise. We showed how
+to implement analyses using the \texttt{bayesTPC} package to perform
+inference in a Bayesian context, exploring both the performance on
+simulated data (where parameters are known) and experimental data, where
+parameters are unknown.
+
+There are a wide variety of functions that have been proposed as TPCs in
+thermal ecology. These functions allow users to assume a wide variety of
+shapes while assuming different levels of ``mechanism'' that cause the
+shape. TPC function also vary in their flexibility. The Briere function
+(Briere et al. 1999) is fairly strict, with a shape that is always left
+skewed (long left-hand tail), a sharp drop off, and an assumption that
+minimum performance must occur at temperatures above 0\(^\circ\)C. In
+contrast, the new flexTPC (Cruz-Loya, Mordecai, and Savage 2024) enables
+symmetric or non-symmetric shapes, left- or right-skew, and minimum
+temperatures of any value. The trade-off is an increase in the number of
+parameters needed to capture the possible shapes.
+
+A unifying feature of these TPCs that they are explicitly bounded from
+below, that is the functions are \(\geq 0\). This boundedness is
+important for the vast majority of TPC applications, as the performance
+traits being modeled are also typically strictly \(\geq 0\). However,
+this makes established TPCs inappropriate for including within a
+GLM-type analysis with canonical link functions. Although it is strictly
+possible to include the more traditional (typically piece-wise
+continuous) TPCs in a GLM analysis using a unit link, this can create
+other problems. For example, neither the Poisson distribution nor the
+binomial distribution is well defined for a mean with value exactly
+zero. The canonical link functions explicitly force an assymptote
+\emph{towards} zero to avoid this occurring. If one is instead
+truncating a function (e.g., a Briere) at particular values, this causes
+instabilities in estimation under this framework. One could instead use
+a small non-zero value outside of the minimum and maximum limits of the
+TPC. However, doing so is equivalent to assuming a minimum rate (for
+Poisson) or probability (for a binomial) that is constant across all
+other values. This is both a biologically poor assumption, and one that
+can bias estimation of the TPC and predictions from the model.
+
+The LINEX TPC, together with a simple quadratic (to capture symmetric
+responses), are able to represent a wide range of shapes that are
+appropriate to use within the logistic model framework because they have
+infinite support -- that is they can produce responses from \(-\infty\)
+to \(\infty\). Further, because of this property, they are also
+appropriate to model other sorts of data within the GLM-flavor
+framework. For example, count data (such as may be recorded for
+fecundity) could be modeled with the LINEX TPC and the log-link to
+either a Poisson or negative-binomial likelihood. Thus, this relatively
+simple three-parameter function can be used for a wide variety of
+thermal trait (or other) data.
+
+Although the model is fairly simple, due to the non-linearity in the
+parameters, the choice of priors for Bayesian inference can still be a
+bit of an art. The temptation is often to choose priors that are wide
+and relatively un-informative for all parameters, but this can result in
+inadequate fitting and bias. For example, if one lets both \(c\) and
+\(a\) have wide priors, particularly if both can be either positive or
+negative, the resulting fit can be biased. The rate of convergence can
+be greatly improved by inestad choosing weakly informative priors for
+one or both of these parameters. For instance, if we know that our peak
+probability is high-ish -- above 0.3 or so -- then a prior that
+constrains \(c\) to be positive improves the inference substantially.
+Further, if one has biological knowledge about the likely direction of
+the skew of the trait, constraining \(a\) to reflect this will also
+improve inference. In the examples above we chose weakly informative
+priors to substantially improve convergence. Practitioners taking a
+maximum likelihood approach would likely need to constrain optimization
+routines in similar ways to obtain good results.
+
+\clearpage
+
+\section{References}\label{references}
+
+\phantomsection\label{refs}
+\begin{CSLReferences}{1}{0}
+\bibitem[\citeproctext]{ref-amarasekare2012framework}
+Amarasekare, Priyanga, and Van Savage. 2012. {``A Framework for
+Elucidating the Temperature Dependence of Fitness.''} \emph{The American
+Naturalist} 179 (2): 178--91.
+
+\bibitem[\citeproctext]{ref-briere1999novel}
+Briere, Jean-Francois, Pascale Pracros, Alain-Yves Le Roux, and
+Jean-Sebastien Pierre. 1999. {``A Novel Rate Model of
+Temperature-Dependent Development for Arthropods.''} \emph{Environmental
+Entomology} 28 (1): 22--29.
+
+\bibitem[\citeproctext]{ref-cruz2024flexible}
+Cruz-Loya, Mauricio, Erin A Mordecai, and Van M Savage. 2024. {``A
+Flexible Model for Thermal Performance Curves.''} \emph{bioRxiv}.
+
+\bibitem[\citeproctext]{ref-doostparast2013bayes}
+Doostparast, Mahdi, Mohammad Vali Ahmadi, and Jafar Ahmadi. 2013.
+{``Bayes Estimation Based on Joint Progressive Type II Censored Data
+Under LINEX Loss Function.''} \emph{Communications in
+Statistics-Simulation and Computation} 42 (8): 1865--86.
+
+\bibitem[\citeproctext]{ref-gajewski2021predicting}
+Gajewski, Zachary, Lisa A Stevenson, David A Pike, Elizabeth A Roznik,
+Ross A Alford, and Leah R Johnson. 2021. {``Predicting the Growth of the
+Amphibian Chytrid Fungus in Varying Temperature Environments.''}
+\emph{Ecology and Evolution} 11 (24): 17920--31.
+
+\bibitem[\citeproctext]{ref-huey1979integrating}
+Huey, Raymond B, and RD Stevenson. 1979. {``Integrating Thermal
+Physiology and Ecology of Ectotherms: A Discussion of Approaches.''}
+\emph{American Zoologist} 19 (1): 357--66.
+
+\bibitem[\citeproctext]{ref-huxley2025beyond}
+Huxley, Paul J, Joel J Brown, Brandy St. Laurent, Britny Johnson, Olivia
+Y Cheung, Anna Asamoah, Brandon D Hollingsworth, et al. 2025. {``Beyond
+Temperature: Relative Humidity Systematically Shifts the Temperature
+Dependence of Population Growth in a Malaria Vector.''} \emph{bioRxiv},
+2025--05.
+
+\bibitem[\citeproctext]{ref-li2007empirical}
+Li, Xiuchun, Yimin Shi, Jieqiong Wei, and Jian Chai. 2007. {``Empirical
+Bayes Estimators of Reliability Performances Using LINEX Loss Under
+Progressively Type-II Censored Samples.''} \emph{Mathematics and
+Computers in Simulation} 73 (5): 320--26.
+
+\bibitem[\citeproctext]{ref-padfield2021rtpc}
+Padfield, Daniel, Hannah O'Sullivan, and Samraat Pawar. 2021. {``rTPC
+and Nls. Multstart: A New Pipeline to Fit Thermal Performance Curves in
+r.''} \emph{Methods in Ecology and Evolution} 12 (6): 1138--43.
+
+\bibitem[\citeproctext]{ref-parsian2002estimation}
+Parsian, Ahmad, and SNUA Kirmani. 2002. {``Estimation Under LINEX Loss
+Function.''} In \emph{Handbook of Applied Econometrics and Statistical
+Inference}, 75--98. CRC Press.
+
+\bibitem[\citeproctext]{ref-coda}
+Plummer, Martyn, Nicky Best, Kate Cowles, and Karen Vines. 2006.
+{``CODA: Convergence Diagnosis and Output Analysis for MCMC.''} \emph{R
+News} 6 (1): 7--11. \url{https://journal.r-project.org/archive/}.
+
+\bibitem[\citeproctext]{ref-cranR}
+R Core Team. 2025. \emph{R: A Language and Environment for Statistical
+Computing}. Vienna, Austria: R Foundation for Statistical Computing.
+\url{https://www.R-project.org/}.
+
+\bibitem[\citeproctext]{ref-schoolfield1981non}
+Schoolfield, Robert M, PJH Sharpe, and Charles E Magnuson. 1981.
+{``Non-Linear Regression of Biological Temperature-Dependent Rate Models
+Based on Absolute Reaction-Rate Theory.''} \emph{Journal of Theoretical
+Biology} 88 (4): 719--31.
+
+\bibitem[\citeproctext]{ref-singh2002estimation}
+Singh, Umesh, Pramod K Gupta, and SK Upadhyay. 2002. {``Estimation of
+Exponentiated Weibull Shape Parameters Under LINEX Loss Function.''}
+\emph{Communications in Statistics-Simulation and Computation} 31 (4):
+523--37.
+
+\bibitem[\citeproctext]{ref-sorek2025}
+Sorek, Sean, John W. Smith Jr., Paul J. Huxley, and Leah R. Johnson.
+2025. {```bayesTPC`: Bayesian Inference for Thermal Performance Curves
+in r.''} \emph{Methods in Ecology and Evolution} 16 (4): 687--97.
+\url{https://doi.org/10.1111/2041-210X.70004}.
+
+\end{CSLReferences}
+
+\clearpage
+
+\setcounter{section}{0}
+\renewcommand{\thesection}{\Alph{section}}
+
+\setcounter{table}{0}
+\renewcommand{\thetable}{A\arabic{table}}
+
+\setcounter{figure}{0}
+\renewcommand{\thefigure}{A\arabic{figure}}
+
+\section{Appendix}\label{sec-app}
+
+\subsection{Diagnostics and summary for fit of left-skewed simulation
+example}\label{sec-diagL}
+
+\begin{figure}
+
+\centering{
+
+\includegraphics{linexTPC_main_files/figure-pdf/fig-TraceLS-1.pdf}
+
+}
+
+\caption{\label{fig-TraceLS}Trace plots for the LINEXP model fit to the
+left skewed simulation data.}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\includegraphics{linexTPC_main_files/figure-pdf/fig-PPLS-1.pdf}
+
+}
+
+\caption{\label{fig-PPLS}Prior-posterior overlap plots for the LINEXP
+model fit to the left skewed simulation data.}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\includegraphics{linexTPC_main_files/figure-pdf/fig-MargLS-1.pdf}
+
+}
+
+\caption{\label{fig-MargLS}Histograms of the marginal posterior samples
+of parameters for the LINEXP model fit to the left skewed simulation
+data.}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\includegraphics{linexTPC_main_files/figure-pdf/fig-JointLS-1.pdf}
+
+}
+
+\caption{\label{fig-JointLS}Pairs plot of samples from the joint
+posterior of parameters for the LINEXP model fit to the left skewed
+simulation data.}
+
+\end{figure}%
+
+\clearpage
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{summary}\NormalTok{(sim.linexp.fitl)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+bayesTPC MCMC of Type:
+  LinExp_binom
+
+Formula:
+  logit(m[i]) <- ( -exp(-a * (Topt - Temp)) + a * (Temp - Topt) + cc )
+
+Distribution:
+  Trait[i] ~ dbinom(m[i], n[i])
+
+Priors:
+  cc ~ dexp(0.1) 
+  a ~ dnorm(0, 1) 
+  Topt ~ dnorm(25, 1/1000)
+
+Max. A Post. Parameters: 
+     Topt         a        cc  log_prob 
+  20.8346    0.3053    2.0439 -110.2282 
+
+MCMC Results:
+Iterations = 1:10000
+Thinning interval = 1 
+Number of chains = 1 
+Sample size per chain = 10000 
+
+1. Empirical mean and standard deviation for each variable,
+   plus standard error of the mean:
+
+        Mean      SD  Naive SE Time-series SE
+Topt 20.8450 0.17487 0.0017487      0.0018069
+a     0.3053 0.01649 0.0001649      0.0001755
+cc    2.0429 0.13682 0.0013682      0.0014181
+
+2. Quantiles for each variable:
+
+        2.5%    25%     50%     75%   97.5%
+Topt 20.5009 20.729 20.8465 20.9626 21.1831
+a     0.2739  0.294  0.3049  0.3163  0.3382
+cc    1.7776  1.951  2.0383  2.1338  2.3168
+\end{verbatim}
+
+
+
+\end{document}

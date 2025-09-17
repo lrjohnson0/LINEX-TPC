@@ -22,48 +22,7 @@ library(gridExtra)
 library(vroom)
 
 # Load and process data 
-df <- read_csv("data/AedesTraits.csv")
-
-df_binomial <- df %>%
-  group_by(interactor1temp, doi) %>%
-  filter(originaltraitunit == "percent" | 
-           originaltraitunit == "percentage" |
-           originaltraitunit == "proportion" |
-           originaltraitunit == "0 = did not survive life stage" |
-           originaltraitunit == "1 = survived life stage" |
-           originaltraitunit == "binomial (1 = transmission occurred)" |
-           originaltraitunit == "binomial (1 = virus positive)" &
-           !is.na(interactor1number) 
-  )
-
-
-#df_binomial$notes <- grepl("n=", df_binomial$notes, ignore.case = FALSE)
-
-# Plot 
-#a<-ggplot(data = df_binomial) +
-#  geom_jitter(aes(interactor1temp, originaltraitvalue, group = doi),
-#              width = 0.2, alpha=0.75) +
-#  facet_wrap(~doi, ncol = 5, scales = "free_y") +
-#  theme(legend.position = "none")
-
-#ggsave("figures/aedesTraits-candidates.pdf", a, width = 15, height = 30)
-
-# Yang
-#doi ==  "10.1017/S0950268809002040" survival NO
-
-  
-
-tesla <- df_binomial %>% filter(doi == "10.1098/rspb.2018.0795"
-                                 ) %>%
-  mutate(N = 40)
-
-
-
-headlee <- df_binomial %>% filter(doi == "10.1093/jee/35.5.785"
-                                  ) %>%
-  mutate(N = 200,
-         originaltraitvalue = originaltraitvalue / N)
-
+headlee <- read_csv("data/headlee_data.csv")
 
 unique(headlee$N)
 unique(headlee$notes)
@@ -71,9 +30,7 @@ unique(headlee$originaltraitname)
 unique(headlee$interactor1number)
 unique(headlee$citation)
 
-sub_df <- bind_rows(tesla,headlee)
-
-ggplot(data = sub_df) +
+ggplot(data = headlee) +
   geom_jitter(aes(interactor1temp, originaltraitvalue, group = doi),
               width = 0.2, alpha=0.75) +
   facet_wrap(~doi, ncol = 5, scales = "free_y") +
@@ -100,7 +57,7 @@ LinExp_binom <- specify_binomial_model(
 # Fit LINEX and binomial quadratic models for each citation
 #----------------------------------------------------------
 
-dois <- unique(sub_df$doi)
+dois <- unique(headlee$doi)
 n_dois <- length(dois)
 
 linexp_fits <- vector("list", n_dois)
@@ -110,7 +67,7 @@ WAIC_df <- data.frame(doi = dois, LINEX = NA, QUAD = NA)
 par(mfrow = c(2, 2), bty = "n")
 
 for (i in seq_along(dois)) {
-  subdat <- sub_df %>% filter(doi == dois[i])
+  subdat <- headlee %>% filter(doi == dois[i])
   # Prepare binomial data
   success <- subdat$interactor1number
   N <- subdat$N
@@ -162,7 +119,7 @@ grid.table(WAIC_df)
 dev.off()
 
 # Save all fits to one PNG (2 rows, 7 columns)
-#png("../figures/all_vector_competence_fits.png", width = 2800, height = 800)  
+png("figures/headlee.png", width = 2800, height = 800)  
 
 par(mfrow = c(2, 7), mar = c(5,5,4,2) + 0.1) # 2 rows, 7 columns
 

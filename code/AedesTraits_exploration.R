@@ -114,14 +114,14 @@ print(WAIC_df)
 library(gridExtra)
 
 # Save WAIC table as PNG
-png("../figures/headlee_WAIC_table.png", width = 750, height = 400)  
+png("figures/headlee_WAIC_table.png", width = 750, height = 400)  
 grid.table(WAIC_df)
 dev.off()
 
-# Save all fits to one PNG (2 rows, 7 columns)
-png("figures/headlee.png", width = 2800, height = 800)  
+# Save all fits to one PNG (1 rows, 2 columns)
+png("figures/headlee.png", width = 800, height = 400)  
 
-par(mfrow = c(2, 7), mar = c(5,5,4,2) + 0.1) # 2 rows, 7 columns
+par(mfrow = c(1,2)) # 2 rows, 7 columns
 
 # Top row: LINEX fits
 for (i in seq_along(dois)) {
@@ -136,3 +136,4 @@ for (i in seq_along(dois)) {
 }
 
 dev.off()
+

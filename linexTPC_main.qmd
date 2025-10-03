@@ -414,12 +414,86 @@ lines(ts, inv.logit(mylinexp(ts,  a=-0.3, cc=2, Topt=14)),
 
 ## Examples on arthropod TPC data
 
-Now we show the performance of the LINEX TPC on experimental data focusing on model selection. In many cases theory can guide the choice between a symmetric or asymmetric TPC. The LINEX function proposed here cannot capture symmetric patterns, so the user must consider assumptions and compare carefully. For example, compound traits, such as the probability of emergence of an adult mosquito (which integrates over multiple life stages), are often assumed to have symmetric TPCs. However, for traits for which the choice is less clear cut, or where secondary stressors may impact the trait, one will typically explicitly choose between functional forms. Thus we give two examples here -- one where the default assumption would be symmetric and the other which is less clear cut -- where we show how the user could fit multiple functional forms and choose between them using information criteria, specifically WAIC (widely-applicable information criterion). 
+Now we show the performance of the LINEX TPC on experimental data focusing on model selection. In some cases theory can guide the choice between a symmetric or asymmetric TPC. However, because the LINEX function proposed here cannot capture symmetric patterns, so the user must consider assumptions and compare carefully. For example, compound traits, such as the probability of emergence of an adult mosquito (which integrates over multiple life stages), are often assumed to have symmetric TPCs. However, often choices of functions for traits are not clear cut, such as where secondary stressors may impact the trait. Instead one will typically explicitly choose between functional forms. 
+
+Here we give examples from two similar data sets where we show how the user could fit multiple functional forms and choose between them using information criteria, specifically WAIC (widely-applicable information criterion). More specifically, we explore data on the proportion of larvae/eggs that successfully develop into adults across temperatures for two species of mosquitoes, *Aedes aegypti* [@headlee1942continuation] and *Anopheles stephensi* [@huxley2025beyond]. 
+ 
 
 
-### Egg to adult emergence probability for *Anopheles stephensi* 
+### Larval to adult emergence probability for *Aedes aegypti*
 
-For our first example, we examine data from @huxley2025beyond on the proportion of *Anopheles stephensi* eggs that successfully develop into adults across 9 temperatures and 3 different relative humidity (RH) levels. This trait aggregates survival and development across multiple life stages (egg, 3 instars, and pupa) into a single metric. TPCs for this trait are typically assumed to be symmetric (e.g., quadratic). We fit the LINEX TPC in the binomial likelihood framework as well as a more standard quadratic GLM to these data. We use WAIC as our metric for model selection. 
+We begin with a simple example a study by @headlee1942continuation that was one of the first to explore the temperature dependence of emergence probability in *Aedes aegypti*. This study specifically began with newly emerged larvae an observed for a fixed time period (HOW LONG) and the proportion emerging was recorded at each of five fixed temperatures. Thus, the trait aggregates survival and development across multiple life stages (3 instars, and pupa), but does not include the probability of hatching from the egg stage. We fit the LINEX TPC in the binomial likelihood framework as well as a more standard quadratic GLM to these data. We use WAIC as our metric for model selection. 
+
+
+
+```{r headlee, echo=FALSE}
+headlee <- read.csv("data/headlee_data.csv")
+
+## number of successes per observation (vector)
+success <- headlee$interactor1number 
+
+trials_per_obs <- headlee$N # trials per observation (vector)
+Temp <- headlee$interactor1temp
+Nobs <- length(success)     # scalar: number of observations
+
+## Build the data list including both the scalar Nobs 
+## (for model loops) and
+# the per-observation trials vector n (for dbin calls)
+fit_dat <- list(Trait = success, Temp = Temp, N = Nobs, 
+                n = trials_per_obs)
+
+```
+
+
+```{r, message=FALSE, output=FALSE, echo=FALSE}
+set.seed(2025)
+
+linexp_fit <- b_TPC(
+  data = fit_dat,
+  model = LinExp_binom,
+  inits = list(a = 0.01, Topt = 28, cc = 0.1),
+  burn = 15000,
+  niter = 25000
+)
+
+quad_fit <- bayesTPC::b_TPC(
+  data = fit_dat,
+  model = "binomial_glm_quad",
+  samplerType = "AF_slice",
+  priors = list(B0 = "dunif(-100,100)", 
+                B1 = "dunif(-10,10)", 
+                B2 = "dunif(-1,1)"),
+  inits = list(B0 = 10, B1 = 1.2, B2 = -0.02),
+  burn = 5000, niter = 15000
+)
+
+WAIC_df <- data.frame(
+  Model = c("LINEX", "QUAD"),
+  WAIC = c(round(get_WAIC(linexp_fit)[1]),
+           round(get_WAIC(quad_fit)[1]))
+)
+
+```
+
+As we can see in @fig-HeadleeSurvFits, the LINEX TPC is visually a much better fit than the quadratic -- these data are seem to be fairly obviously asymmetric. The WAIC scores confirm the visual assessment, showing that for these data, the LINEX TPC is strongly preferred (@fig-HeadleeSurvFits).
+
+```{r, echo=FALSE, fig.align='center', fig.height=3, fig.width=5.5, warning=FALSE}
+#| label: fig-HeadleeSurvFits
+#| fig-cap: "Visualization of posterior fits of the LINEX TPC (left) and quadratic generalized linear model (right) to data on ??? across temperature (from Headlee). The median fit is indicated with a solid red line, the 95% HPD interval of the TPC as the dashed blue lines. WAIC for the corresponding fits are shown in each panel" 
+
+par(mfrow = c(1,2), mar = c(4,4,3,1))
+plot(linexp_fit, ylim = c(0,1), legend = FALSE, main = "LINEX")
+text(23, 0.1, paste("WAIC = ", WAIC_df$WAIC[1], sep=""))
+plot(quad_fit, ylim = c(0,1), legend = FALSE, main = "Quadratic")
+text(23, 0.1, paste("WAIC = ", WAIC_df$WAIC[2], sep=""))
+```
+
+
+
+
+### Larval to adult emergence probability for *Anopheles stephensi*
+
+For our second example, we examine data from @huxley2025beyond on the proportion of *Anopheles stephensi* eggs that successfully develop into adults across 9 temperatures and 3 different relative humidity (RH) levels. This trait aggregates survival and development across multiple life stages (egg, 3 instars, and pupa) into a single metric. TPCs for this trait are typically assumed to be symmetric (e.g., quadratic). We fit the same two models to data at each humidity level separately, and choose the best fitting model at each humidity level using WAIC. 
 
 ```{r, message=FALSE, echo=FALSE, fig.align='center', fig.height=3, fig.width=6, warning=FALSE}
 
@@ -497,78 +571,6 @@ knitr::kable(round(myWAIC, 2))
 
 We can see in @fig-mozJuvSurvFits that both models visually have reasonable fits at each humidity level, although the relatively flat emergence probability across a wide temperature range seen at 90% RH (bottom two rows) is not particularly well captured by either model. Model selection via WAIC prefers the symmetric quadratic function at most RH (including at other levels not shown here), although at 75% RH the LINEX is favored  (@tbl-mozJuvSurvFitsWAIC). 
 
-### Another set of trait data
-
-About the Headlee data
-
-```{r headlee, echo=FALSE}
-headlee <- read.csv("data/headlee_data.csv")
-
-## number of successes per observation (vector)
-success <- headlee$interactor1number 
-
-trials_per_obs <- headlee$N # trials per observation (vector)
-Temp <- headlee$interactor1temp
-Nobs <- length(success)     # scalar: number of observations
-
-## Build the data list including both the scalar Nobs 
-## (for model loops) and
-# the per-observation trials vector n (for dbin calls)
-fit_dat <- list(Trait = success, Temp = Temp, N = Nobs, 
-                n = trials_per_obs)
-
-```
-
-
-```{r, message=FALSE, output=FALSE, echo=FALSE}
-set.seed(2025)
-
-linexp_fit <- b_TPC(
-  data = fit_dat,
-  model = LinExp_binom,
-  inits = list(a = 0.01, Topt = 28, cc = 0.1),
-  burn = 15000,
-  niter = 25000
-)
-
-quad_fit <- bayesTPC::b_TPC(
-  data = fit_dat,
-  model = "binomial_glm_quad",
-  samplerType = "AF_slice",
-  priors = list(B0 = "dunif(-100,100)", 
-                B1 = "dunif(-10,10)", 
-                B2 = "dunif(-1,1)"),
-  inits = list(B0 = 10, B1 = 1.2, B2 = -0.02),
-  burn = 5000, niter = 15000
-)
-
-WAIC_df <- data.frame(
-  Model = c("LINEX", "QUAD"),
-  WAIC = c(round(get_WAIC(linexp_fit)[1]),
-           round(get_WAIC(quad_fit)[1]))
-)
-
-```
-
-
-
-As we can see in @fig-HeadleeSurvFits, the LINEX TPC is visually a much better fit -- these data are more obviously assymmetric than in the previous example. And indeed, the WAIC scores confirm the visual assessment, showing that for these data, the LINEX TPC is strongly preferred ( @fig-HeadleeSurvFits).
-
-```{r, echo=FALSE, fig.align='center', fig.height=3, fig.width=5.5, warning=FALSE}
-#| label: fig-HeadleeSurvFits
-#| fig-cap: "Visualization of posterior fits of the LINEX TPC (left) and quadratic generalized linear model (right) to data on ??? across temperature (from Headlee). The median fit is indicated with a solid red line, the 95% HPD interval of the TPC as the dashed blue lines. WAIC for the corresponding fits are shown in each panel" 
-
-par(mfrow = c(1,2), mar = c(4,4,3,1))
-plot(linexp_fit, ylim = c(0,1), legend = FALSE, main = "LINEX")
-text(23, 0.1, paste("WAIC = ", WAIC_df$WAIC[1], sep=""))
-plot(quad_fit, ylim = c(0,1), legend = FALSE, main = "Quadratic")
-text(23, 0.1, paste("WAIC = ", WAIC_df$WAIC[2], sep=""))
-```
-
-
-
-
-\clearpage
 
 # Discussion
 

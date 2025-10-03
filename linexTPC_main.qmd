@@ -499,7 +499,74 @@ We can see in @fig-mozJuvSurvFits that both models visually have reasonable fits
 
 ### Another set of trait data
 
-Here we will put another set of the trait data, and analysis, focusing on one that is more likely to be asymmetric! Yay!
+About the Headlee data
+
+```{r headlee, echo=FALSE}
+headlee <- read.csv("data/headlee_data.csv")
+
+## number of successes per observation (vector)
+success <- headlee$interactor1number 
+
+trials_per_obs <- headlee$N # trials per observation (vector)
+Temp <- headlee$interactor1temp
+Nobs <- length(success)     # scalar: number of observations
+
+## Build the data list including both the scalar Nobs 
+## (for model loops) and
+# the per-observation trials vector n (for dbin calls)
+fit_dat <- list(Trait = success, Temp = Temp, N = Nobs, 
+                n = trials_per_obs)
+
+```
+
+
+```{r, message=FALSE, output=FALSE, echo=FALSE}
+set.seed(2025)
+
+linexp_fit <- b_TPC(
+  data = fit_dat,
+  model = LinExp_binom,
+  inits = list(a = 0.01, Topt = 28, cc = 0.1),
+  burn = 15000,
+  niter = 25000
+)
+
+quad_fit <- bayesTPC::b_TPC(
+  data = fit_dat,
+  model = "binomial_glm_quad",
+  samplerType = "AF_slice",
+  priors = list(B0 = "dunif(-100,100)", 
+                B1 = "dunif(-10,10)", 
+                B2 = "dunif(-1,1)"),
+  inits = list(B0 = 10, B1 = 1.2, B2 = -0.02),
+  burn = 5000, niter = 15000
+)
+
+WAIC_df <- data.frame(
+  Model = c("LINEX", "QUAD"),
+  WAIC = c(round(get_WAIC(linexp_fit)[1]),
+           round(get_WAIC(quad_fit)[1]))
+)
+
+```
+
+
+
+As we can see in @fig-HeadleeSurvFits, the LINEX TPC is visually a much better fit -- these data are more obviously assymmetric than in the previous example. And indeed, the WAIC scores confirm the visual assessment, showing that for these data, the LINEX TPC is strongly preferred ( @fig-HeadleeSurvFits).
+
+```{r, echo=FALSE, fig.align='center', fig.height=3, fig.width=5.5, warning=FALSE}
+#| label: fig-HeadleeSurvFits
+#| fig-cap: "Visualization of posterior fits of the LINEX TPC (left) and quadratic generalized linear model (right) to data on ??? across temperature (from Headlee). The median fit is indicated with a solid red line, the 95% HPD interval of the TPC as the dashed blue lines. WAIC for the corresponding fits are shown in each panel" 
+
+par(mfrow = c(1,2), mar = c(4,4,3,1))
+plot(linexp_fit, ylim = c(0,1), legend = FALSE, main = "LINEX")
+text(23, 0.1, paste("WAIC = ", WAIC_df$WAIC[1], sep=""))
+plot(quad_fit, ylim = c(0,1), legend = FALSE, main = "Quadratic")
+text(23, 0.1, paste("WAIC = ", WAIC_df$WAIC[2], sep=""))
+```
+
+
+
 
 \clearpage
 

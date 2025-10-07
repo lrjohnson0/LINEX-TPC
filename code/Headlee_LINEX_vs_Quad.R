@@ -3,25 +3,25 @@
 # Date: 2025-09-19
 
 rm(list = ls())
-graphics.off()
+#graphics.off()
 
 # Load libraries
 library(nimble)
 library(bayesTPC)
-library(tidyverse)
-library(purrr)
-library(patchwork)
-library(cowplot)
-library(EnvStats)
-library(parallel)
-library(hdi)
+#library(tidyverse)
+#library(purrr)
+#library(patchwork)
+#library(cowplot)
+#library(EnvStats)
+#library(parallel)
+#library(hdi)
 library(HDInterval)
-library(grid)
-library(gridExtra) 
-library(vroom)
+#library(grid)
+#library(gridExtra) 
+#library(vroom)
 
 # Load and process data 
-headlee <- read_csv("data/headlee_data.csv")
+headlee <- read.csv("../data/headlee_data.csv")
 
 # Quick checks
 head(headlee)
@@ -86,16 +86,16 @@ quad_fit <- bayesTPC::b_TPC(
 # Plot fits side-by-side
 #----------------------------------------------------------
 # Single PNG with two panels: LINEX | Quadratic
-png("figures/Headlee_fits.png", width = 800, height = 400)
+#png("figures/Headlee_fits.png", width = 800, height = 400)
 par(mfrow = c(1,2), mar = c(4,4,3,1))
 plot(linexp_fit, ylim = c(0,1), legend = FALSE, main = "LINEX")
 plot(quad_fit, ylim = c(0,1), legend = FALSE, main = "Quadratic")
-dev.off()
+#dev.off()
 
 # Also show on screen/device
-par(mfrow = c(1,2))
-plot(linexp_fit, ylim = c(0,1), legend = FALSE, main = "LINEX")
-plot(quad_fit, ylim = c(0,1), legend = FALSE, main = "Quadratic")
+#par(mfrow = c(1,2))
+#plot(linexp_fit, ylim = c(0,1), legend = FALSE, main = "LINEX")
+#plot(quad_fit, ylim = c(0,1), legend = FALSE, main = "Quadratic")
 
 #----------------------------------------------------------
 # Compute and save WAIC
@@ -107,8 +107,8 @@ WAIC_df <- data.frame(
 
 print(WAIC_df)
 
-png("figures/headlee_WAIC_table.png", width = 400, height = 200)  
+#png("figures/headlee_WAIC_table.png", width = 400, height = 200)  
 grid.table(WAIC_df)
-dev.off()
+#dev.off()
 
 # End of script

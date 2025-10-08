@@ -48,7 +48,7 @@ author:
         state: FL
     corresponding: false
 abstract: > 
-Ectotherms are subject to temperature impacts on a variety of functional traits, such as fecundity and development. Quantifying the shape of the response of traits to temperature involves fitting (usually) non-linear curves to empirically derived data. This study introduces the LINEX Thermal Performance Curve (TPC), a novel non-linear predictor for modeling asymmetric thermal responses in biological traits. Unlike traditional symmetric TPCs, the LINEX function captures a wide range of asymmetric shapes (e.g., left- or right-skewed), making it particularly suitable for traits like survival or fecundity that often exhibit non-normal, bounded distributions. The study implements the LINEX TPC within a Bayesian framework using the `bayesTPC` R package. We demonstrate the model’s flexibility and utility through simulations and experimental data from arthropod thermal traits. Results highlight the LINEX TPC’s superior fit for asymmetric traits compared to standard quadratic models, as evidenced by improved performance metrics. The approach addresses challenges in estimating uncertainty in bounded data, providing a robust tool for ecological and evolutionary studies that require precise thermal sensitivity modeling.
+  Ectotherms are subject to temperature impacts on a variety of functional traits, such as fecundity and development. Quantifying the shape of the response of traits to temperature involves fitting (usually) non-linear curves to empirically derived data. This study introduces the LINEX Thermal Performance Curve (TPC), a novel non-linear predictor for modeling asymmetric thermal responses in biological traits. Unlike traditional symmetric TPCs, the LINEX function captures a wide range of asymmetric shapes (e.g., left- or right-skewed), making it particularly suitable for traits like survival or fecundity that often exhibit non-normal, bounded distributions. The study implements the LINEX TPC within a Bayesian framework using the `bayesTPC` R package. We demonstrate the model’s flexibility and utility through simulations and experimental data from arthropod thermal traits. Results highlight the LINEX TPC's superior fit for asymmetric traits compared to standard quadratic models, as evidenced by improved performance metrics. The approach addresses challenges in estimating uncertainty in bounded data, providing a robust tool for ecological and evolutionary studies that require precise thermal sensitivity modeling.
 keywords:
   - Thermal Performance Curves
   - binomial data
@@ -341,7 +341,7 @@ sim.linexp.datr<-list(Trait = datr$counts,
                       n = datr$n)
 ```
 
-Once the data have been formatted and our bespoke LINEX TPC model defined, we use the built in function `b_TPC` to fit the model. There are various options that can be included. Here we specify a sampler type "AF_slice" (that works well for posteriors that may have high correlation, as TPCs often do), as well as a burn in length and number of total iterations of the MCMC to keep (for more details about possibilities see CITE). We also give an example of specifying a starting value for the sampler. Although this is not strictly necessary, it can speed up convergence. 
+Once the data have been formatted and our bespoke LINEX TPC model defined, we use the built in function `b_TPC` to fit the model. There are various options that can be included. Here we specify a sampler type "AF_slice" (that works well for posteriors that may have high correlation, as TPCs often do), as well as a burn in length and number of total iterations of the MCMC to keep (for more details about possibilities see @sorek2025). We also give an example of specifying a starting value for the sampler. Although this is not strictly necessary, it can speed up convergence. 
 
 ```{r, message=FALSE, output=FALSE}
 sim.linexp.fitl<-b_TPC(data = sim.linexp.datl, 
@@ -416,14 +416,12 @@ lines(ts, inv.logit(mylinexp(ts,  a=-0.3, cc=2, Topt=14)),
 
 Next we demonstrate the performance of the LINEX TPC on real world experimental data, focusing on model selection. In some cases, theory can guide the user's choice between fitting a symmetric or asymmetric TPC. Since the LINEX function proposed here cannot capture symmetric patterns, the user must consider assumptions and compare function choice carefully. 
 
-MOVE THIS PART INTO DISCUSSION AS CAVEATS AND WARNINGS For example, compound traits, such as the probability of emergence of an adult mosquito (which integrates over multiple life stages), are frequently assumed to have symmetric TPCs. However, the choice of functions for traits are not often obvious, for example, in situations where secondary stressors may impact the trait. Typically, one chooses between functional forms. MOVE ENDS HERE
-
 Here we give examples from two similar data sets where we show how the user could fit multiple functional forms and choose between them using information criteria, specifically WAIC (widely-applicable information criterion, @gelman2013infcrit). More specifically, we explore data on the proportion of larvae/eggs that successfully develop into adults across temperatures for two species of mosquitoes, *Aedes aegypti* [@headlee1942continuation] and *Anopheles stephensi* [@huxley2025beyond]. 
  
 
-### Larval to adult emergence probability for *Aedes aegypti*
+### Larvae to adult emergence probability for *Aedes aegypti*
 
-Our first example is from @headlee1942continuation, one of the first studies to explore the temperature dependence of emergence probability in *Aedes aegypti*. This study observed newly emerged larvae, and recorded the proportion emerging as adults, at each of five fixed temperatures. Thus, the trait aggregates survival and development across multiple life stages (3 instars, and pupa), but does not include the probability of hatching from the egg stage. We fit the LINEX TPC in the binomial likelihood framework and a more standard quadratic GLM to these data. We use WAIC as our metric for model selection. 
+Our first example is from @headlee1942continuation, one of the first studies to explore the temperature dependence of emergence probability in *Aedes aegypti*. This study observed newly emerged larvae, and recorded the proportion of these  emerging as adults, at each of five fixed temperatures. Thus, the trait aggregates survival and development across multiple life stages (3 larval instars, and pupae), but does not include the probability of hatching from the egg stage. We fit the LINEX TPC in the binomial likelihood framework and a more standard quadratic GLM to these data. We use WAIC as our metric for model selection. 
 
 
 
@@ -480,7 +478,7 @@ As we can see in @fig-HeadleeSurvFits, the LINEX TPC is visually a much better f
 
 ```{r, echo=FALSE, fig.align='center', fig.height=3, fig.width=5.5, warning=FALSE}
 #| label: fig-HeadleeSurvFits
-#| fig-cap: "Visualization of posterior fits of the LINEX TPC (left) and quadratic generalized linear model (right) to data on ??? across temperature (from Headlee). The median fit is indicated with a solid red line, the 95% HPD interval of the TPC as the dashed blue lines. WAIC for the corresponding fits are shown in each panel" 
+#| fig-cap: "Visualization of posterior fits of the LINEX TPC (left) and quadratic generalized linear model (right) to data on probability of larvae successfully developing to the adult stage in *Aedes aegypti*across temperature (from @headlee1942continuation). The median fit is indicated with a solid red line, the 95% HPD interval of the TPC as the dashed blue lines. WAIC for the corresponding fits are shown in each panel" 
 
 par(mfrow = c(1,2), mar = c(4,4,3,1))
 plot(linexp_fit, ylim = c(0,1), legend = FALSE, main = "LINEX")
@@ -492,7 +490,7 @@ text(23, 0.1, paste("WAIC = ", WAIC_df$WAIC[2], sep=""))
 
 
 
-### Larval to adult emergence probability for *Anopheles stephensi*
+### Egg to adult emergence probability for *Anopheles stephensi*
 
 For our second example, we examine data from @huxley2025beyond on the proportion of *Anopheles stephensi* eggs that successfully develop into adults across 9 temperatures and 3 different relative humidity (RH) levels. This trait aggregates survival and development across multiple life stages (egg, 3 instars, and pupa) into a single metric. TPCs for this trait are typically assumed to be symmetric (e.g., quadratic). We fit the same two models to data at each humidity level separately, and choose the best fitting model at each humidity level using WAIC. 
 
@@ -577,7 +575,9 @@ We can see in @fig-mozJuvSurvFits that both models visually have reasonable fits
 
 In this paper we introduce the use of the LINEX function, a fairly simple non-linear function that can serve as an asymmetric TPC in a GLM-style modeling approach. This approach can be used model bounded data that are not well captured by a more classic piece-wise continuous bounded TPC with normal (or approximately normal) noise. We showed how to implement analyses using the `bayesTPC` package to perform inference in a Bayesian context, exploring both the performance on simulated data (where parameters are known) and experimental data, where parameters are unknown. 
 
-There are a wide variety of functions that have been proposed as TPCs in thermal ecology. These functions allow users to assume a wide variety of shapes while assuming different levels of "mechanism" that cause the shape. TPC function also vary in their flexibility. The Briere function [@briere1999novel] is fairly strict, with a shape that is always left skewed (long left-hand tail), a sharp drop off, and an assumption that minimum performance must occur at temperatures above 0$^\circ$C. In contrast, the new flexTPC [@cruz2024flexible] enables symmetric or non-symmetric shapes, left- or right-skew, and minimum temperatures of any value. The trade-off is an increase in the number of parameters needed to capture the possible shapes. 
+Often the assumed shape of a TPC reflects assumptions about the traits. For example, compound traits, such as the probability of emergence of an adult mosquito (which integrates over multiple life stages), are frequently assumed to have symmetric TPCs. However, the choice of functions for traits are not often obvious, for example, in situations where secondary stressors may impact the trait. Thus, a practitioner usually will need to choose between functional forms when fitting models.
+
+There are a wide variety of functions that have been proposed as TPCs in thermal ecology. These functions allow users to assume a wide variety of shapes while assuming different levels of "mechanism" that cause the shape. TPC functions also vary in their flexibility. The Briere function [@briere1999novel] is fairly strict, with a shape that is always left skewed (long left-hand tail), a sharp drop off, and an assumption that minimum performance must occur at temperatures above 0$^\circ$C. In contrast, the new flexTPC [@cruz2024flexible] enables symmetric or non-symmetric shapes, left- or right-skew, and minimum temperatures of any value. The trade-off is an increase in the number of parameters needed to capture the possible shapes. 
 
 A unifying feature of these TPCs that they are explicitly bounded from below, that is the functions are $\geq 0$. This boundedness is important for the vast majority of TPC applications, as the performance traits being modeled are also typically strictly $\geq 0$. However, this makes established TPCs inappropriate for including within a GLM-type analysis with canonical link functions. Although it is strictly possible to include the more traditional (typically piece-wise continuous) TPCs in a GLM analysis using a unit link, this can create other problems. For example, neither the Poisson distribution nor the binomial distribution is well defined for a mean with value exactly zero. The canonical link functions explicitly force an asymptote *towards* zero to avoid this occurring. If one is instead truncating a function (e.g., a Briere) at particular values, this causes instabilities in estimation under this framework. One could instead use a small non-zero value outside of the minimum and maximum limits of the TPC. However, doing so is equivalent to assuming a minimum rate (for Poisson) or probability (for a binomial) that is constant across all other values. This is both a biologically poor assumption, and one that can bias estimation of the TPC and predictions from the model. 
 

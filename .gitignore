@@ -5,3 +5,6 @@
 figures/*.png
 .DS_Store
 *.DS_Store
+
+# Generated R/knitr caches
+*_cache/

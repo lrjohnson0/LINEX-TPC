@@ -8,8 +8,7 @@ The reviewer found a real problem with the RH90 fit: the LINEX model has two ver
 - `plot_RH90_bayesTPC_six_chains.R` is the focused bayesTPC check for RH90 and the proposed Figure 5 layout.
 - `data/` contains the two input CSVs.
 
-Each script creates a `results/` directory beside itself when run. If you already have cached fits from an earlier run, keep that directory in place; the plotting script will reuse the original LINEX and quadratic fits. It must fit the *new* six negative-start chains once, saving them as `results/RH90_bayesTPC_LINEX_negative_start_6chains.rds`. The previous one-chain negative-start fit has a different filename and is not reused.
-
+Each script creates a `results/` directory beside itself when run. If you already have cached fits from an earlier run, keep that directory in place; the plotting script will reuse the original LINEX and quadratic fits. It must fit the *new* six negative-start chains once, saving them as `results/RH90_bayesTPC_LINEX_negative_start_6chains.rds`.
 ## Run the RH90 figure check
 
 From the repository root, with `bayesTPC`, `nimble` and `coda` installed:

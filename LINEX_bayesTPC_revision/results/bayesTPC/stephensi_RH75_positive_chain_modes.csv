@@ -1,0 +1,7 @@
+"dataset","model","chain","mean_a","fraction_a_positive","crosses_sign"
+"stephensi_RH75","positive",1,0.316620133382496,1,FALSE
+"stephensi_RH75","positive",2,0.316863362565521,1,FALSE
+"stephensi_RH75","positive",3,0.317590451424879,1,FALSE
+"stephensi_RH75","positive",4,0.316552172755146,1,FALSE
+"stephensi_RH75","positive",5,0.317331084108597,1,FALSE
+"stephensi_RH75","positive",6,0.316977002245776,1,FALSE

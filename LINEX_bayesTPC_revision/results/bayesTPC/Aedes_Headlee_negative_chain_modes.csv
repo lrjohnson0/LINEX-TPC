@@ -1,0 +1,7 @@
+"dataset","model","chain","mean_a","fraction_a_positive","crosses_sign"
+"Aedes_Headlee","negative",1,-0.304042222427785,0,FALSE
+"Aedes_Headlee","negative",2,-0.303927186104947,0,FALSE
+"Aedes_Headlee","negative",3,-0.303666769711984,0,FALSE
+"Aedes_Headlee","negative",4,-0.305718012510718,0,FALSE
+"Aedes_Headlee","negative",5,-0.303883105074974,0,FALSE
+"Aedes_Headlee","negative",6,-0.303855737905683,0,FALSE

@@ -1,0 +1,7 @@
+"dataset","model","chain","mean_a","fraction_a_positive","crosses_sign"
+"sim_left_missing10","unrestricted",1,0.315674214842883,1,FALSE
+"sim_left_missing10","unrestricted",2,-0.220822559993656,0,FALSE
+"sim_left_missing10","unrestricted",3,0.314099610981802,1,FALSE
+"sim_left_missing10","unrestricted",4,-0.22085610412282,0,FALSE
+"sim_left_missing10","unrestricted",5,0.315259760742763,1,FALSE
+"sim_left_missing10","unrestricted",6,-0.222142915512679,0,FALSE

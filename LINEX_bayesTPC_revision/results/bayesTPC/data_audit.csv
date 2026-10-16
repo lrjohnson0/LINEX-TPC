@@ -1,0 +1,9 @@
+"dataset","rows","temperatures","trials","successes"
+"stephensi_RH45",10,10,2997,1309
+"stephensi_RH75",9,9,2699,1331
+"stephensi_RH90",8,8,3000,1305
+"Aedes_Headlee",5,5,1000,706
+"sim_left",60,6,1200,393
+"sim_right",60,6,1200,391
+"sim_left_missing10",50,5,1000,347
+"sim_right_missing10",50,5,1000,301

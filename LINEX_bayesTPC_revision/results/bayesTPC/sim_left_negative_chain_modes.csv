@@ -1,0 +1,7 @@
+"dataset","model","chain","mean_a","fraction_a_positive","crosses_sign"
+"sim_left","negative",1,-0.199481802373018,0,FALSE
+"sim_left","negative",2,-0.198165170439024,0,FALSE
+"sim_left","negative",3,-0.198506745963518,0,FALSE
+"sim_left","negative",4,-0.19941975312182,0,FALSE
+"sim_left","negative",5,-0.199124285202271,0,FALSE
+"sim_left","negative",6,-0.198521745475992,0,FALSE

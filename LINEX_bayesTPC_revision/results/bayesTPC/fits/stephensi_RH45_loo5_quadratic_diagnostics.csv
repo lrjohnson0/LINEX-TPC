@@ -1,0 +1,5 @@
+"dataset","model","variable","rhat","ess_bulk","ess_tail"
+"stephensi_RH45_loo5","quadratic","B0",1.00012797328898,57931.2112785218,41753.0609451726
+"stephensi_RH45_loo5","quadratic","B1",1.0000736458405,57929.4042334801,44103.6392967893
+"stephensi_RH45_loo5","quadratic","B2",1.00004655388674,58162.2242404023,44529.0416647858
+"stephensi_RH45_loo5","quadratic","log_posterior",1.00001511441998,30081.7495415288,40651.6201405997

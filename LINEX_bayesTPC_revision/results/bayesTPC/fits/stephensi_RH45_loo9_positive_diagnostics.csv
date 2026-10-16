@@ -1,0 +1,5 @@
+"dataset","model","variable","rhat","ess_bulk","ess_tail"
+"stephensi_RH45_loo9","positive","a",1.00112776975271,2653.11026119115,5389.86747615875
+"stephensi_RH45_loo9","positive","Topt",1.00080154538021,8239.24196002216,12159.1909532009
+"stephensi_RH45_loo9","positive","cc",1.00186871941719,2714.75491573363,5565.38815270722
+"stephensi_RH45_loo9","positive","log_posterior",1.00093501473692,8495.66221634925,12504.2514002752

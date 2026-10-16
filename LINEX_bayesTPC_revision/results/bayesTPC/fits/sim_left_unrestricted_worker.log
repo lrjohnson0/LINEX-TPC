@@ -1,0 +1,45 @@
+Model type 'linex_revision_unrestricted_sim_left' can now be accessed using other bayesTPC functions. Use `reset_models()` to reset back to defaults.
+Creating NIMBLE model:
+ - Configuring model.
+  [Note] safeDeparse: truncating deparse output to 1 line
+ - Compiling model.
+
+Creating MCMC:
+ - Configuring MCMC.
+ - Compiling MCMC.
+ - Running MCMC.
+
+Progress:
+
+Configuring Output:
+ - Finding Max. a Post. parameters.
+Running chain 1 using the compiled bayesTPC sampler
+  [Warning] To calculate WAIC, set 'WAIC = TRUE', in addition to having enabled WAIC in building the MCMC.
+running chain 1...
+|-------------|-------------|-------------|-------------|
+|-------------------------------------------------------|
+Running chain 2 using the compiled bayesTPC sampler
+  [Warning] To calculate WAIC, set 'WAIC = TRUE', in addition to having enabled WAIC in building the MCMC.
+running chain 1...
+|-------------|-------------|-------------|-------------|
+|-------------------------------------------------------|
+Running chain 3 using the compiled bayesTPC sampler
+  [Warning] To calculate WAIC, set 'WAIC = TRUE', in addition to having enabled WAIC in building the MCMC.
+running chain 1...
+|-------------|-------------|-------------|-------------|
+|-------------------------------------------------------|
+Running chain 4 using the compiled bayesTPC sampler
+  [Warning] To calculate WAIC, set 'WAIC = TRUE', in addition to having enabled WAIC in building the MCMC.
+running chain 1...
+|-------------|-------------|-------------|-------------|
+|-------------------------------------------------------|
+Running chain 5 using the compiled bayesTPC sampler
+  [Warning] To calculate WAIC, set 'WAIC = TRUE', in addition to having enabled WAIC in building the MCMC.
+running chain 1...
+|-------------|-------------|-------------|-------------|
+|-------------------------------------------------------|
+Running chain 6 using the compiled bayesTPC sampler
+  [Warning] To calculate WAIC, set 'WAIC = TRUE', in addition to having enabled WAIC in building the MCMC.
+running chain 1...
+|-------------|-------------|-------------|-------------|
+|-------------------------------------------------------|

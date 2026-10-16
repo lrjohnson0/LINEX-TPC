@@ -48,7 +48,7 @@ author:
         state: FL
     corresponding: false
 abstract: > 
-  Ectotherms are subject to temperature impacts on a variety of functional traits, such as fecundity and development. Quantifying the shape of the response of traits to temperature involves fitting (usually) non-linear curves to empirically derived data. This study introduces the LINEX Thermal Performance Curve (TPC), a novel non-linear predictor for modeling asymmetric thermal responses in biological traits. Unlike traditional symmetric TPCs, the LINEX function captures a wide range of asymmetric shapes (e.g., left- or right-skewed), making it particularly suitable for traits like survival or fecundity that often exhibit non-normal, bounded distributions. The study implements the LINEX TPC within a Bayesian framework using the `bayesTPC` R package. We demonstrate the model’s flexibility and utility through simulations and experimental data from arthropod thermal traits. Results highlight the LINEX TPC's superior fit for asymmetric traits compared to standard quadratic models, as evidenced by improved performance metrics. The approach addresses challenges in estimating uncertainty in bounded data, providing a robust tool for ecological and evolutionary studies that require precise thermal sensitivity modeling.
+  Ectotherms are subject to temperature impacts on a variety of functional traits, such as fecundity and development. Quantifying the shape of the response of traits to temperature involves fitting (usually) non-linear curves to empirically derived data. This study introduces the LINEX Thermal Performance Curve (TPC), a novel non-linear predictor for modeling asymmetric thermal responses in biological traits. Unlike traditional symmetric TPCs, the LINEX function captures a wide range of asymmetric shapes (e.g., left- or right-skewed), making it particularly suitable for traits like survival or fecundity that often exhibit non-normal, bounded distributions. As an example, the study implements the LINEX TPC within a Bayesian framework using the bayesTPC package in R. We demonstrate the model’s flexibility and utility through simulations and experimental data from arthropod thermal traits. Results highlight the LINEX TPC's superior fit for asymmetric traits compared to standard quadratic models, as evidenced by improved performance metrics. The approach addresses challenges in estimating uncertainty in bounded data, providing an additional tool for ecological and evolutionary studies that require precise thermal sensitivity modeling. This work previously appeared as a preprint on bioRxiv.
 keywords:
   - Thermal Performance Curves
   - binomial data
@@ -107,18 +107,18 @@ Ambient temperature impacts a variety of functional traits in ectotherms, such a
 
 Often the observed trait measurements (or the average of these) may reasonably be assumed to be roughly normally distributed at a particular temperature, with the mean at that temperature described by a TPC. For example, across moderate temperatures mosquitoes often lay many eggs at once, so these counts (or the average across times/individuals) may be approximately normal. In these cases, standard fitting approaches including non-linear least squares (NLLS) [@padfield2021rtpc] or Bayesian/maximum likelihood approaches (that assume the data are normally distributed with mean determined by the TPC, e.g., @johnson2015understanding) may be used to fit the TPCs to data. Further, as long as the data may reasonably be assumed to be non-negative and likely unbounded from above, the general approach may still work. For example, if data are strictly positive, such as wing lengths, then the standard TPC can be used, but linked to other distributions, such as a truncated normal or gamma, in order to better describe the variability of the data around the assumed TPC. 
 
-However, this approach is not ideal for data that are also bounded within an interval. Specifically, proportion data, where the number of "successes" within a given number of trials are recorded, are poorly captured by the standard TPC framework. This is because two conditions must hold in order for these types of data to be approximated by a normal distribution. First the probability of success must not be "too close" to either one or zero. This is problematic under the normal/truncated normal TPC framework because we often specifically want the TPC to be close to these limits at particular temperatures. Further, the number of trials must be sufficiently large, with the sample size needing to be even higher the closer that the success probability is to either zero or one. If these conditions do not hold, the point estimate of the mean may be reasonable, but any uncertainty bounds will be problematic. For example, if the sample size is small, the error may be poorly estimated by the normal distribution. Additionally, when the uncertainty is problematic in the TPC where probabilities are near one or zero, the estimated ranges may not correspond to appropriate probabilities (i.e., they include values greater than one or less than zero). Thus, while NLLS and other similar fitting approaches can be used to obtain point estimates of TPC parameters for proportion data, and estimate the resulting mean response (e.g., @mordecai2013optimal), the uncertainty bounds for  parameters and the associated TPC can be misleading. 
+However, this approach is not ideal for data that are also bounded within an interval. Specifically, proportion data, where the number of "successes" within a given number of trials are recorded, are poorly captured by the standard TPC framework. This is because two conditions must hold in order for these types of data to be approximated by a normal distribution. First the probability of success must not be "too close" to either one or zero. This is problematic under the normal/truncated normal TPC framework because we often specifically want the TPC to be close to these limits at particular temperatures. Further, the number of trials must be sufficiently large, with the sample size needing to be even higher the closer that the success probability is to either zero or one. If these conditions do not hold, the point estimate of the mean may be reasonable, but any uncertainty bounds will be problematic. For example, if the sample size is small, the error will be poorly estimated by the normal distribution. Additionally, when the uncertainty is problematic in the TPC where probabilities are near one or zero, the estimated ranges may not correspond to appropriate probabilities (i.e., they include values greater than one or less than zero). Thus, while NLLS and other similar fitting approaches can be used to obtain point estimates of TPC parameters for proportion data, and estimate the resulting mean response (e.g., @mordecai2013optimal), the uncertainty bounds for  parameters and the associated TPC can be misleading. 
 
-In addition to the complications of fitting proportion data, TPC shapes, in practice, are often constrained by the number of experimental temperature settings (values along the x-axis) as well as the number of measurements taken in an experiment. This is because the number of temperature settings needed increases as the number of parameters increases [@pawar2016real]. Thus, we wish to have functions and approaches that minimize the number of parameters that must be estimated. 
+In addition to the complications of fitting proportion data, TPC shapes, in practice, are often constrained by the number of experimental temperature settings (values along the x-axis) as well as the number of measurements taken in an experiment. This is because the number of temperature settings needed for inference  increases as the number of parameters increases [@pawar2016real]. Thus, we wish to have functions and approaches that minimize the number of parameters that must be estimated. 
 
 A standard alternative approach to modeling binomial success data is generalized linear modeling (GLMs, @dobson2018introduction). In this approach, the data are recorded as the number of successes with the corresponding number of trials instead of as a proportion. A "link" between the modeled probability, formulated in terms of a linear model, and these binomial outcomes is assumed. This approach is flexible and straightforward; however, because of the requirement that the underlying model be linear in the parameters (e.g., lines, polynomial terms or similar), a standard GLM framework cannot capture the asymmetric patterns common in thermal ecology. 
 
-Here we introduce a simple extension to the standard GLM formulation of TPCs for binomial data using a straightforward non-linear predictor function. This predictor function is flexible, allowing for a range of shapes (concave up or down, left or right skewed), has only 3 parameters to estimate, and is appropriate for use with a binomial modeling approach. Further, we provide examples of a fully workable pipeline to facilitate the uptake of this framework by practitioners, particularly those generating thermal trait data through empirical laboratory studies. First, we introduce the function and describe the parameters and interpretation. Second, we show how to implement it as a TPC to fit trait data in a Bayesian framework using the package `bayesTPC` in R. This allows us to accommodate the non-linear function together with the appropriate link and likelihood. Third, we give examples of fitting the TPC to simulated data, to explore some subtleties inherent in analysis of these kinds of data. Fourth, we use this to fit real data from examples of arthropod thermal traits. Finally, we discuss the use of the function more generally. 
+Here we introduce a simple non-linear TPC that can be used within an extension to the standard GLM formulation for binomial data, a binomial Generalized Non-linear Model (GNM, , @lane1996generalized). The TPC  predictor function we introduce is flexible, allowing for a range of shapes (concave up or down, left or right skewed), has only 3 parameters to estimate, and is appropriate for use with GNM approach. Further, we provide examples of a fully workable pipeline to facilitate the uptake of this framework by practitioners, particularly those generating thermal trait data through empirical laboratory studies. First, we introduce the function and describe the parameters and interpretation. Second, we show how to implement it as a TPC to fit trait data in a Bayesian framework using the package `bayesTPC` in R. This allows us to accommodate the non-linear function together with the appropriate link and likelihood without needing to be able to code a likelihood from scratch. Third, we give examples of fitting the TPC to simulated data, to explore some subtleties inherent in analysis of these kinds of data. Fourth, we use this to fit real data from examples of arthropod thermal traits. Finally, we discuss the use of the function more generally. 
 
 
 # Methods
 
-## The Generalized Linear Modeling framework
+## The Generalized Linear/Non-linear Modeling framework
 
 A Generalized Linear Model (GLM) is a modeling framework that builds on linear regression modelling, a foundational model of statistics. GLMs extend linear models by changing two requirements of the linear model. First, they allow different classes of distributions for the response variables. The most commonly used non-Normal distributions for GLMs are the Binomial (used for binary data) and the Poisson (used for positive counts). Second, they allow a general *link* function to constrain the linear predictor $\eta_i$ to the domain of support for the response distribution: 
 $$
@@ -136,20 +136,20 @@ In the standard logistic GLM framework the linear predictor has two important pr
 
 ## The LINEX TPC
 
-From a theoretical perspective, it is possible to instead use a non-linear predictor -- that is, one that fulfills the first requirement but not the second. Doing so means that the standard fitting methods for GLMs (which rely on the linearity of the predictors) cannot be used to fit the model. Because of this, we usually keep to the linear predictor unless it cannot produce a specific desired shape. In our case, we wish to be able to construct a predictor that is hump/u-shaped (like a quadratic) and asymmetric (unlike a quadratic) using as few parameters as possible. 
+From a theoretical perspective, it is possible to instead use a non-linear predictor -- that is, one that fulfills the first requirement but not the second. We call models of this type Generalized NonLinear Models (GNM, @lane1996generalized). Doing so means that the standard fitting methods for GLMs (which rely on the linearity of the predictors) cannot be used to fit the model. Because of this, we usually keep to the linear predictor unless it cannot produce a specific desired shape. In our case, we wish to be able to construct a predictor that is hump/u-shaped (like a quadratic) and asymmetric (unlike a quadratic) using as few parameters as possible. 
 
-One possible solution is to adapt an existing functional form. Linear Exponential loss functions (a.k.a., LINEX loss functions, a portmanteau of the component models) are fairly common as constraints in the economic literature (e.g., @parsian2002estimation) and within the statistics literature as an alternative to quadratic loss when estimating model parameters (e.g., @singh2002estimation, @li2007empirical, @doostparast2013bayes). This functional form can be modified and used as a TPC in place of a linear predictor to generalize the GLM framework introduced above. We define the non-linear LINEX TPC *predictor* to be
+One possible solution is to adapt an existing functional form. Linear Exponential loss functions (a.k.a., LINEX loss functions, a portmanteau of the component models) are fairly common as constraints in the economic literature (e.g., @parsian2002estimation) and within the statistics literature as an alternative to quadratic loss when estimating model parameters (e.g., @singh2002estimation, @li2007empirical, @doostparast2013bayes). This functional form can be modified and used as a TPC in place of a linear predictor in the GNM framework. We define the non-linear LINEX TPC *predictor* to be
 $$
 f(T) = - e^{(-a( T_{\mathrm{opt}} - T ) )} + a ( T - T_{\mathrm{opt}}) + c 
 $$ {#eq-LINEX-TPC1}
-where $T_{\mathrm{opt}}$ determines the location of the optimum of the function, $c - 1$ is the height of the function at the maximum, and $a$ governs a combination of the curvature (based on the magnitude of $a$) and skew. The direction of skew is determined by the sign of $a$: if $a>0$ it is left skewed and if $a<0$ it is right skewed (@fig-LINEX, top and middle). The function can be modified slightly to enable a concave up shape, with the value of $a$ still determining the skew, 
+where $T_{\mathrm{opt}}$ determines the location of the optimum of the function, $c - 1$ is the height of the function at the maximum, and $a$ governs a combination of the curvature (based on the magnitude of $a$) and skew. The direction of skew is determined by the sign of $a$: if $a>0$ it is left skewed and if $a<0$ it is right skewed (@fig-1, top and middle). The function can be modified slightly to enable a concave up shape, with the value of $a$ still determining the skew, 
 $$
 f_{\mathrm{up}}(T) = e^{(-a( T_{\mathrm{opt}} - T ) )} - a ( T - T_{\mathrm{opt}}) + c  
 $$ {#eq-LINEX-TPC2}
-where the parameters are as for the concave down version, except that the value at $T_{\mathrm{opt}}$ is now the *minimum* with a value $f_{\mathrm{up}}(T_{\mathrm{opt}}) = c+1$ (@fig-LINEX, bottom row). Either @eq-LINEX-TPC1 or @eq-LINEX-TPC2 can take the place of the linear predictor in the logistic model (@eq-logistic). We show the inverse logit transform of these equations (corresponding to the probability of success) in the right-hand panels of @fig-LINEX. Note that the LINEX function, as parameterized here, cannot be symmetric. 
+where the parameters are as for the concave down version, except that the value at $T_{\mathrm{opt}}$ is now the *minimum* with a value $f_{\mathrm{up}}(T_{\mathrm{opt}}) = c+1$ (@fig-1, bottom row). Either @eq-LINEX-TPC1 or @eq-LINEX-TPC2 can take the place of the linear predictor in the logistic model (@eq-logistic). We show the inverse logit transform of these equations (corresponding to the probability of success) in the right-hand panels of @fig-1. Note that the LINEX function, as parameterized here, cannot be symmetric. 
 
 ```{r, echo=FALSE, fig.align='center', fig.height=6.5, fig.width=5}
-#| label: fig-LINEX
+#| label: fig-1
 #| fig-cap: "**Shapes of the LINEX TPC.** Examples of shapes that can be generated by the LINEX TPC, together with a vertical line indicating the location of the optimum ($T_{\\mathrm{opt}}$). In each case, the left panel shows the shape of the non-linear predictor and the right panel shows the inverse logit transformed predictor that gives the probability of success. (A) and (B): Left-skewed, $T_{\\mathrm{opt}}=20$, $a = 0.2$, $c=3$. (C) and (D): Right-skewed, $T_{\\mathrm{opt}}=7$, $a = -0.25$, $c=2$. (E) and (F): concave-up, $T_{\\mathrm{opt}}=15$, $a = 0.2$, $c=-2.5$."
 
 ## positive a, we get a left skew
@@ -209,7 +209,7 @@ abline(v=14, col=2)
 text(-5, 1, labels = "(F)", adj=c(0,1), cex=1.25)
 ```
 
-We can simulate data from this model to use for testing in a straightforward manner. We define the inverse logit transform of the LINEX function as the probability, $p$, for the target  binomial distribution. We first choose parameters for the LINEX function and the number of trials in an experiment (e.g., the number of eggs). We then draw the number of "successes" (eggs that hatch) using the `rbinom` function in R with the $p$ set as the value of $p$ at the temperature setting, and repeat this across a set number of replicates (@fig-simdat). We will use these simulated data to test the inference functions in the next section. 
+We can simulate data from this model to use for testing in a straightforward manner. We define the inverse logit transform of the LINEX function as the probability, $p$, for the target  binomial distribution. We first choose parameters for the LINEX function and the number of trials in an experiment (e.g., the number of eggs). We then draw the number of "successes" (eggs that hatch) using the `rbinom` function in R with the $p$ set as the value of $p$ at the temperature setting, and repeat this across a set number of replicates (@fig-2). We will use these simulated data to test the inference functions in the next section. 
 
 ```{r, echo=FALSE}
 
@@ -280,7 +280,7 @@ names(datr)<-c("Temp", "counts", "n")
 
 
 ```{r, echo=FALSE, fig.align='center', fig.height=3, fig.width=7}
-#| label: fig-simdat
+#| label: fig-2
 #| fig-cap: "**Simulated data from LINEX TPC model** Visualization of simulated data from the LINEX TPC model, together with inverse logit transform of the assumed functional response (blue lines). Points correspond to 10 virtual replicates, each consisting of $n=20$ 'trials' with the proportion of successes plotted (counts/$n$) at each temperature. Temperature values are jittered slightly for visualization purposes. (A): Left-skewed simulation, dark blue line, $T_{\\mathrm{opt}}=21$, $a = 0.3$, $c=2$. (B): Right-skewed simulation, light blue line, $T_{\\mathrm{opt}}=14$, $a = -0.3$, $c=2$"
 
 par(mfrow=c(1,2), mar = c(4, 4, 1, 0) + 0.1)
@@ -305,7 +305,7 @@ text(0, 1, labels = "(B)", adj=c(0,1))
 
 ## Bayesian inference for LINEX TPC using `bayesTPC`
 
-In R [@cranR] and most other common statistical software, the sort of extensions to GLMs suggested here are not easy to implement by default. Typically a user would need to be able to manually specify the predictor, link, and likelihood. This must then be inputted into an appropriate optimization routine (to perform maximum likelihood estimation of parameters), or priors could additionally be specified and Bayesian estimation performed (e.g., via Markov-chain Monte Carlo). This typically requires some specialist knowledge. However, the package `bayesTPC` [@sorek2025] in R allows for specification of TPCs and model formulations in a relatively straightforward way. Thus, we use this package and its machinery to build a straightforward example pipeline, including defining the TPC since LINEX TPC is not available natively in `bayesTPC`. We note that we do not provide a general tutorial for best practices in Bayesian statistics. Instead, for in-depth treatment of this (including chain diagnostics, etc.) we suggest @hobbs2015bayesian.
+In `R` [@cranR] and most other common statistical software, a GNM of the type suggested here is not easy to implement by default. Typically a user would need to be able to manually specify the predictor, link, and likelihood. This must then be inputted into an appropriate optimization routine (to perform maximum likelihood estimation of parameters), or priors could additionally be specified and Bayesian estimation performed (e.g., via Markov-chain Monte Carlo). This typically requires some specialist knowledge. However, the package `bayesTPC` [@sorek2025] in `R` allows for specification of TPCs and model formulations in a relatively straightforward way. Thus, we use this package and its machinery to build an example pipeline, including defining the TPC (since LINEX TPC is not available natively in `bayesTPC`). We note that we do not provide a general tutorial for best practices in Bayesian statistics. Instead, for in-depth treatment of this (including chain diagnostics, etc.) we suggest @hobbs2015bayesian.
 
 Building a model in `bayesTPC` requires three steps: 
 
@@ -362,26 +362,26 @@ sim.linex.datr<-list(Trait = datr$counts,
                       n = datr$n)
 ```
 
-Once the data have been formatted and our bespoke LINEX TPC model defined, we use the built in function `b_TPC` to fit the model. There are various options that can be included. Here we specify a sampler type "AF_slice" (that works well for posteriors that may have high correlation, as TPCs often do), as well as a burn in length and number of total iterations of the MCMC to keep (for more details about possibilities see @sorek2025). We also give an example of specifying a starting value for the sampler. Although this is often not strictly necessary, it can speed up convergence. 
+Once the data have been formatted and our bespoke LINEX TPC model defined, we use the built in function `b_TPC` to fit the model. There are various options that can be included. Here we specify a sampler type "AF_slice" for one of the fits (this works well for posteriors that may have high correlation, as TPCs often do). We also can specify a burn in length, number of MCMC chains, and number of total iterations of the MCMC to keep (for more details about possibilities see @sorek2025). We also give an example of specifying a starting value for the sampler. Although this is often not strictly necessary, it can speed up convergence or support exploration of potential convergence issues (which we explore in more depth below). 
 
 ```{r, message=FALSE, output=FALSE, cache=TRUE}
 sim.linex.fitl<-b_TPC(data = sim.linex.datl, 
                       model = "linex_binom", 
                       samplerType = "AF_slice",
                       inits = list(a=0.1, Topt=17),
-                      burn = 10000,
-                      niter = 20000)
+                      burn = 10000, niter = 20000, 
+                      nchains = 1)
 
 sim.linex.fitr<-b_TPC(data = sim.linex.datr, 
-                       model = "linex_binom", 
-                       inits = list(a=-0.1, Topt=15),
-                       burn = 10000,
-                       niter = 20000)
+                      model = "linex_binom", 
+                      inits = list(a=-0.1, Topt=15),
+                      burn = 10000, niter = 20000,
+                      nchains = 1)
 ```
 
-The `bayesTPC` package includes a variety of visualization tools that utilize `coda` [@coda] and similar packages to allow checking of MCMC chain convergence, prior-posterior overlap, and marginal and joint posterior distributions of parameters (see @sec-diagL for examples of diagnostic plots for the model fits for the left-skewed data). It also provides summaries of model fits, and maximum *a posteriori* (MAP) estimates of parameters. For our purposes here, the most interesting output is the estimated median posterior TPC and the 95% highest posterior density (HPD) interval of this median across temperatures (@fig-simdatFits). In the simulated data set, we have a sufficient amount of data across a reasonably fine grid of temperature settings. This allows the algorithm to reconstruct the curve and parameters well. 
+The `bayesTPC` package includes a variety of visualization tools that utilize `coda` [@coda] and similar packages to allow checking of MCMC chain convergence, prior-posterior overlap, and marginal and joint posterior distributions of parameters (see @sec-diagL, specifically Figures \ref{fig-A2} -- \ref{fig-A5}, for examples of diagnostic plots for the model fits for the left-skewed data). It also provides summaries of model fits, and maximum *a posteriori* (MAP) estimates of parameters. For our purposes here, the most interesting output is the estimated median posterior TPC and the 95% highest posterior density (HPD) interval of this median across temperatures (@fig-3). In the simulated data set, we have a sufficient amount of data across a reasonably fine grid of temperature settings. This allows the algorithm to reconstruct the curve and parameters well. 
 
-It is important to note that as the model is so flexible, it can miss the mark in cases where the experimental design (i.e., temperature settings) is less than ideal. In @fig-simdatFits (bottom two panels) we give examples of fits obtained when data at a single temperature (here 10$^{\circ}$C) are removed. For the left skewed data (@fig-simdatFits, bottom left panel), this removes data in the longer tail, which can result in two effects. First (as shown here) we can get a similar fit, with slightly increased uncertainty. This data missingness can also slow convergence and result in poor fits where the estimated skew is backwards and the peak is close to the range of the missing data (not shown). In contrast, when the data are missing closer to the peak, as in the right-skewed data (@fig-simdatFits, bottom right panel), the right hand tail is still captured adequately, but the uncertainty in the location of the peak increases, which also changes the estimate of the temperature where the drop-off occurs. These are standard issues in estimation of parameters for non-linear functions if insufficient predictor settings are used, as has been noted by other authors [@pawar2016real].
+It is important to note that as the model is so flexible, it can miss the mark in cases where the experimental design (i.e., temperature settings) is less than ideal. In @fig-3 (bottom two panels) we give examples of fits obtained when data at a single temperature (here 10$^{\circ}$C) are removed. For the left skewed data (@fig-3, bottom left panel), this removes data in the longer tail, which can result in two effects. First (as shown here) we can get a similar fit, with slightly increased uncertainty. This data missingness can also slow convergence and result in poor fits where the estimated skew is backwards and the peak is close to the range of the missing data (not shown). In contrast, when the data are missing closer to the peak, as in the right-skewed data (@fig-3, bottom right panel), the right hand tail is still captured adequately, but the uncertainty in the location of the peak increases, which also changes the estimate of the temperature where the drop-off occurs. These are standard issues in estimation of parameters for non-linear functions if insufficient number of predictor settings are used, as has been noted by other authors [e.g., @pawar2016real].
 
 ```{r, echo=FALSE, message=FALSE, output=FALSE}
 wl<-which(datl$Temp!=10)
@@ -399,19 +399,17 @@ sim.linex.fitl.red10<-b_TPC(data = sim.linex.datl.red10,
                       model = "linex_binom", 
                       samplerType = "AF_slice",
                       inits = list(a=0.1, Topt=17),
-                      burn = 10000,
-                      niter = 20000)
+                      burn = 10000, niter = 20000)
 
 sim.linex.fitr.red10<-b_TPC(data = sim.linex.datr.red10, 
                        model = "linex_binom", 
                        inits = list(a=-0.1, Topt=15),
-                       burn = 10000,
-                       niter = 20000)
+                       burn = 10000, niter = 20000)
 ```
 
 ```{r echo=FALSE, fig.align='center', fig.height=6, fig.width=7.5, warning=FALSE}
-#| label: fig-simdatFits
-#| fig-cap: "**Posterior fits of LINEX TPC to simulated data** Visualization of posterior fits of the LINEX TPC to simulated data from the LINEX TPC model from the left-skewed (LEFT, A and C) and right-skewed (RIGHT, B and D) models shown in @fig-simdat. Panels (A) and (B) show the fits with the complete data set and Panels (C) and (D) fits where the data at $10^{o}$C have been removed. The median fit is indicated with a solid red line, the 95% HPD interval of the TPC as the dashed blue lines. The true line (corresponding to the model that generated the data) is indicated with a dashed grey line. Points correspond to 10 virtual replicates, each consisting of $n=20$ 'trials' with the proportion of successes plotted (counts/$n$) at each temperature." 
+#| label: fig-3
+#| fig-cap: "**Posterior fits of LINEX TPC to simulated data** Visualization of posterior fits of the LINEX TPC to simulated data from the LINEX TPC model from the left-skewed (LEFT, A and C) and right-skewed (RIGHT, B and D) models shown in @fig-2. Panels (A) and (B) show the fits with the complete data set and Panels (C) and (D) fits where the data at $10^{o}$C have been removed. The median fit is indicated with a solid red line, the 95% HPD interval of the TPC as the dashed blue lines. The true line (corresponding to the model that generated the data) is indicated with a dashed grey line. Points correspond to 10 virtual replicates, each consisting of $n=20$ 'trials' with the proportion of successes plotted (counts/$n$) at each temperature." 
 
 
 ## plot predictions
@@ -454,12 +452,12 @@ text(5, 1, labels = "(D)", adj=c(0,1), cex=1.25)
 
 Next we demonstrate the performance of the LINEX TPC on real world experimental data, focusing on model selection. In some cases, theory can guide the user's choice between fitting a symmetric or asymmetric TPC. Since the LINEX function proposed here cannot capture symmetric patterns, the user must consider assumptions and compare function choice carefully. 
 
-Here we give examples from two similar data sets where we show how the user could fit multiple functional forms and choose between them using information criteria, specifically WAIC (widely-applicable information criterion, @gelman2013infcrit). More specifically, we explore data on the proportion of larvae/eggs that successfully develop into adults across temperatures for two species of mosquitoes, *Aedes aegypti* [@headlee1942continuation] and *Anopheles stephensi* [@huxley2025beyond]. The data used in these examples are directly accessible through the AedesTraits dataset [@AedesTraits] and the LINEX TPC GitHub repository.
+Here we give examples from two similar data sets where we show how the user could fit multiple functional forms and choose between them using information criteria, specifically WAIC (widely-applicable information criterion, @gelman2013infcrit). These datasets also allow us to explore potential challenges with understanding and interpreting fits in cases where asymmetry may not be present. More specifically, we explore data on the proportion of larvae/eggs that successfully develop into adults across temperatures for two species of mosquitoes, *Aedes aegypti* [@headlee1942continuation] and *Anopheles stephensi* [@huxley2025beyond]. The data used in these examples are directly accessible through the AedesTraits dataset [@AedesTraits] and the LINEX TPC GitHub repository.
  
 
 ### Larvae to adult emergence probability for *Aedes aegypti*
 
-Our first example is from @headlee1942continuation, one of the first studies to explore the temperature dependence of emergence probability in *Aedes aegypti*. This study observed newly emerged larvae, and recorded the proportion of these emerging as adults, at each of five fixed temperatures. Thus, the trait aggregates survival and development across multiple life stages (3 larval instars, and pupae), but does not include the probability of hatching from the egg stage. We fit the LINEX TPC in the binomial likelihood framework and a more standard quadratic GLM to these data. We use WAIC as our metric for model selection. 
+Our first example is from @headlee1942continuation, one of the first studies to explore the temperature dependence of emergence probability in *Aedes aegypti*. This study observed newly emerged larvae, and recorded the proportion of these emerging as adults, at each of five fixed temperatures. Thus, the trait aggregates survival and development across multiple life stages (3 larval instars, and pupae), but does not include the probability of hatching from the egg stage. This study only included 5 temperature settings, and thus a minimal parameter model is vital, as models with more parameters are likely to overfit and have poor resolution of parameters. We fit the LINEX TPC in the binomial likelihood framework and a more standard quadratic GLM to these data. We use WAIC as our metric for model selection. 
 
 
 
@@ -487,10 +485,9 @@ set.seed(2025)
 
 linex_fit <- b_TPC(
   data = fit_dat,
-  model = linex_binom,
+  model = "linex_binom",
   inits = list(a = 0.01, Topt = 28, cc = 0.1),
-  burn = 15000,
-  niter = 25000
+  burn = 15000, niter = 25000, nchains = 1
 )
 
 quad_fit <- bayesTPC::b_TPC(
@@ -501,7 +498,7 @@ quad_fit <- bayesTPC::b_TPC(
                 B1 = "dunif(-10,10)", 
                 B2 = "dunif(-1,1)"),
   inits = list(B0 = 10, B1 = 1.2, B2 = -0.02),
-  burn = 5000, niter = 15000
+  burn = 5000, niter = 15000, nchains = 1
 )
 
 WAIC_df <- data.frame(
@@ -512,13 +509,14 @@ WAIC_df <- data.frame(
 
 ```
 
-As we can see in @fig-HeadleeSurvFits, the LINEX TPC is visually a much better fit than the quadratic -- these data seem to be fairly obviously asymmetric. The WAIC scores confirm the visual assessment, showing that for these data, the LINEX TPC is strongly preferred (@fig-HeadleeSurvFits).
+As we can see in @fig-4, the LINEX TPC is visually a much better fit than the quadratic -- these data seem to be fairly obviously asymmetric. For both models, all 6 chains converge appropriately (see Appendix ***ADD***). The WAIC scores confirm the visual assessment, showing that for these data, the LINEX TPC is strongly preferred (@fig-4).
 
 ```{r, echo=FALSE, fig.align='center', fig.height=3.25, fig.width=7, warning=FALSE}
-#| label: fig-HeadleeSurvFits
+#| label: fig-4
 #| fig-cap: "**Fits to larvae to adult emergence probability for *Aedes aegypti* **. Visualization of posterior fits of the LINEX TPC (A) and quadratic generalized linear model (B) to data on probability of larvae successfully developing to the adult stage in *Ae. aegypti* across temperature (from @headlee1942continuation). The median fit is indicated with a solid red line, the 95% HPD interval of the TPC as the dashed blue lines. WAIC for the corresponding fits are shown in each panel." 
 
 par(mfrow = c(1,2), mar = c(4,4,2,1) + 0.1)
+
 plot(linex_fit, ylim = c(0,1.1), 
      legend = FALSE, main = "LINEX")
 text(23, 0.1, paste("WAIC = ", WAIC_df$WAIC[1], sep=""))
@@ -536,9 +534,9 @@ text(15.5, 1.1, labels = "(B)", adj=c(0,1), cex=1.25)
 
 ### Egg to adult emergence probability for *Anopheles stephensi*
 
-For our second example, we examine data from @huxley2025beyond on the proportion of *Anopheles stephensi* eggs that successfully develop into adults across 9 temperatures and 3 different relative humidity (RH) levels. This trait aggregates survival and development across multiple life stages (egg, 3 instars, and pupa) into a single metric. TPCs for this trait are typically assumed to be symmetric (e.g., quadratic). We fit the same two models to data at each humidity level separately, and choose the best fitting model at each humidity level using WAIC. 
+For our second example, we examine data from @huxley2025beyond on the proportion of *Anopheles stephensi* eggs that successfully develop into adults across 9 temperatures and 3 different relative humidity (RH) levels. This trait aggregates survival and development across multiple life stages (egg, 3 instars, and pupa) into a single metric. TPCs for this trait are typically assumed to be symmetric (e.g., quadratic). Thus we would expect that the LINEX TPC would not capture the patterns well. The goal was to fit the same two models to data at each humidity level separately, and choose the best/most appropriately fitting model at each humidity level. 
 
-```{r, message=FALSE, echo=FALSE, fig.align='center', fig.height=3, fig.width=6, warning=FALSE}
+```{r, message=FALSE, echo=FALSE, warning=FALSE}
 
 set.seed(9876)
 bjs_data <- read.csv("data/binomial-juvenile-survival-data.csv")
@@ -569,8 +567,8 @@ for(i in 1:l){
   sim.linex.fit.moz[[i]]<-b_TPC(data = bjs_data[w,], 
                           model = "linex_binom",
                           inits = list(a=0.01, Topt=28),
-                          burn = 15000,
-                          niter = 25000)
+                          burn = 15000, niter = 25000, 
+                          nchains = 1)
   
   sim.quad.fit.moz[[i]] <- bayesTPC::b_TPC(data = bjs_data[w,],
                           "binomial_glm_quad", 
@@ -580,7 +578,8 @@ for(i in 1:l){
                                         B2 = "dunif(-1,1)"),
                           inits = list(B0 = 10, B1 = 1.2, 
                                        B2 = -0.02),
-                          burn = 5000, niter = 15000)
+                          burn = 5000, niter = 15000, 
+                          nchains = 1)
   
   myWAIC[i,] <- c(RH[i], 
                   get_WAIC(sim.linex.fit.moz[[i]])[1],
@@ -591,7 +590,7 @@ myWAIC<-round(myWAIC)
 ```
 
 ```{r, echo=FALSE, fig.align='center', fig.height=7.5, fig.width=6, warning=FALSE}
-#| label: fig-mozJuvSurvFits
+#| label: fig-5
 #| fig-cap: "**Fits to *An. stephensi* juvenile survival data.** Visualization of posterior fits of the LINEX TPC and quadratic generalized linear model to data on the proportion of *An. stephensi* eggs emerging as adults across temperature for three humidity levels (from @huxley2025beyond). The median fit is indicated with a solid red line, the 95% HPD interval of the TPC as the dashed blue lines. WAIC for the corresponding fits are shown in each panel." 
 
 myleg<-c(T,F)
@@ -623,13 +622,20 @@ i<-3
 
 ```{r, echo=FALSE, eval=FALSE, fig.align='center'}
 #| label: tbl-mozJuvSurvFitsWAIC
-#| tbl-cap: "WAIC values for the LINEX and quadratic generalized linear model fits from @fig-mozJuvSurvFits." 
+#| tbl-cap: "WAIC values for the LINEX and quadratic generalized linear model fits from @fig-5." 
  
 knitr::kable(round(myWAIC, 2))
 ```
 
 
-We can see in @fig-mozJuvSurvFits that both models visually have reasonable fits at each humidity level, although the relatively flat emergence probability across a wide temperature range seen at 90% RH (bottom two rows) is not particularly well captured by either model. Model selection via WAIC prefers the symmetric quadratic function at most RH (including levels not shown here), but at 75% RH the LINEX is favored for these priors and starting value. 
+We can see in @fig-5 that both models visually have reasonable fits at each humidity level, although the relatively flat emergence probability across a wide temperature range seen at 90% RH (bottom two rows) is not particularly well captured by either model. At first glance, model selection via WAIC prefers the symmetric quadratic function at most RH (including levels not shown here), but at 75% RH the LINEX is favored for these priors and starting value. However, these superficial results hide important details about the relative performance of the two models. 
+
+As noted at the beginning of this section, it is usually assumed that data of this sort should be symmetric.  Indeed we can visually see that most of the data appear fairly symmetric, and in many cases the WAIC would support the quadratic pattern. However, the LINEX TPC *CANNOT* describe a symmetric, unimodal pattern under any parameter values (see @fig-A1 for more examples of how the shape varies as $a$ and $c$ vary together). Thus, if the data were perfectly symmetric, there would be two possible "best" fits of the LINEX TPC to the data -- one left skewed and on right skewed (corresponding to positive or negative values of $a$, respectively). The result would be a bi-modal likelihood/posterior distribution, which is notoriously difficult to sample from, and where the initial values of the sampler can have an out-sized influence on the estimated fit. 
+
+We can see this effect if we more closely examine the MCMC chains and fits for the LINEX TPC for a subset of these data. For the 90% RH treatment, we re-fit the data with 18 MCMC chains -- six LINEX TPC initialized with $a>0$, LINEX TPC initialized with $a<0$, and six for the quadratic (see Appendix XXX for the code for this case). Examining the trace plots (Appendix figure XXX), we can see that in all three cases the 6 chains each separately converge to their own solutions. However the solutions for the two LINEX TPC cases are different from each other -- if the initial value of $a$ is negative the chains stay negative whereas a positive initial value of $a$ stays positive, producing fits with the corresponding skew. This is a common pattern in multimodal posterior distributions when the modes are fairly distinct. A practitioner using the LINEX TPC function in a classical MLE framework would experience related issues estimating parameters as the initial value will determine the local maxima found by an optimization routine. 
+
+There are a variety of approaches to deal with multimodal posteriors. For example, one could use stacking approaches [CITATION] where samples from multiple modes are combined (we show a naive example of how this could look in Figure XXX). One could break the symmetry with a strong prior on $a$, for example if there is theory to guide the choice [e.g., @amarasekare2012framework], or could use a more complex model (which increases uncertainty in parameters for small datasets, but concurrently can make sampling easier). However, we suggest that the instability/multi-modality itself provides additional information that a symmetric model is likely more appropriate for these data, and a practitioner can use this to choose which model to use for knock-on analyses.  
+
 
 
 # Discussion
@@ -638,18 +644,21 @@ In this paper we introduce the use of the LINEX function, a fairly simple non-li
 
 Often the assumed shape of a TPC reflects assumptions about the traits. For example, compound traits, such as the probability of emergence of an adult mosquito (which integrates over multiple life stages), are frequently assumed to have symmetric TPCs [@amarasekare2012framework]. However, the choice of functions for traits are not always obvious, for example, in situations where secondary stressors may impact the trait. Thus, a practitioner usually will need to choose between functional forms when fitting models.
 
-There are many functions that have been proposed as TPCs in thermal ecology (e.g., @kontopoulos2024no explore 83 models). These functions allow users to assume a wide variety of shapes while assuming different levels of "mechanism" that cause the shape [@kontopoulos2024no;@pawar2025toward]. TPC functions also vary in their flexibility. For example, the three-parameter Briere function [@briere1999novel] is fairly strict, with a shape that is always left skewed (long left-hand tail), a sharp drop off (undefined above the thermal maximum), and, if not explicitly truncated, predicts that performance will become slightly negative before increasing to infinity again as temperature decreases. In contrast, the new flexTPC [@cruz2026flexible] enables symmetric or non-symmetric shapes, left- or right-skew, and minimum temperatures of any value. Even the LINEX TPC can be extended to include an additional parameter, that allows more flexibility in the steepness around the peak. The trade-off for the additional flexibility is an increase in the number of parameters needed to capture the possible shapes and a corresponding increase in the amount of data (and particularly the number of experimental settings of the temperature) needed to fit the model [@pawar2016real]. 
+There are many functions that have been proposed as TPCs in thermal ecology (e.g., @kontopoulos2024no explore 83 models). These functions allow users to assume a wide variety of shapes while assuming different levels of "mechanism" that cause the shape [@kontopoulos2024no;@pawar2025toward]. TPC functions also vary in their flexibility. For example, the three-parameter Briere function [@briere1999novel] is fairly strict, with a shape that is always left skewed (long left-hand tail), a sharp drop off (undefined above the thermal maximum), and, if not explicitly truncated, predicts that performance will become slightly negative before increasing to infinity again as temperature decreases. In contrast, the new flexTPC [@cruz2026flexible] enables symmetric or non-symmetric shapes, left- or right-skew, and minimum temperatures of any value for non-negative traits, but requires five parameters. Even the LINEX TPC can be extended to include an additional parameter, that allows more flexibility in the steepness around the peak. The trade-off for the additional flexibility is an increase in the number of parameters needed to capture the possible shapes and a corresponding increase in the amount of data (and particularly the number of experimental settings of the temperature) needed to fit the model [@pawar2016real]. 
 
-A unifying feature of these TPCs is that they are explicitly bounded from below -- the functions are $\geq 0$. This boundedness is important for the vast majority of TPC applications, as the performance traits being modeled are also typically strictly $\geq 0$. However, this makes established TPCs inappropriate for including within a GLM-type analysis with non-unit link functions. Although it is strictly possible to include the more traditional (typically piece-wise continuous) TPCs in a GLM analysis using a unit link, this can create other problems. For example, neither the Poisson distribution nor the binomial distribution is well defined for a mean with value exactly zero. The canonical link functions explicitly force an asymptote *towards* zero to avoid this occurring. If one is instead truncating a function (e.g., a Briere) at particular values, this causes instabilities in estimation under this framework. One could instead use a small non-zero value outside of the minimum and maximum limits of the TPC. However, doing so is equivalent to assuming a minimum rate (for Poisson) or probability (for a binomial) that is constant across all other values. This is both a biologically poor assumption, and one that can bias estimation of the TPC and predictions from the model. 
+A unifying feature of most of these TPCs is that they are explicitly bounded from below -- the functions are $\geq 0$. This boundedness is important for the vast majority of TPC applications, as the performance traits being modeled are also typically strictly $\geq 0$. However, this makes established TPCs inappropriate for including within a GLM-type analysis with non-unit link functions. Although it is strictly possible to include the more traditional (typically piece-wise continuous) TPCs in a GLM analysis using a unit link, this can create other problems. For example, neither the Poisson distribution nor the binomial distribution is well defined for a mean with value exactly zero. The canonical link functions explicitly force an asymptote *towards* zero to avoid this occurring. If one is instead truncating a function (e.g., a Briere) at particular values, this causes instabilities in estimation under this framework. One could instead use a small non-zero value outside of the minimum and maximum limits of the TPC. However, doing so is equivalent to assuming a minimum rate (for Poisson) or probability (for a binomial) that is constant across all other values. This is both a biologically poor assumption, and one that can bias estimation of the TPC and predictions from the model. 
 
 The LINEX TPC, together with a simple quadratic (to capture symmetric responses), are able to represent a wide range of shapes that are appropriate to use within the logistic model framework because they have infinite support -- that is they can produce responses from $-\infty$ to $\infty$. Further, because of this property, they are also appropriate to model other sorts of data within the GLM-style framework. For example, count data (such as may be recorded for fecundity) could be modeled with the LINEX TPC and the log-link to either a Poisson or negative-binomial likelihood. Thus, this relatively simple three-parameter function can be used for a wide variety of thermal trait (or other) data. 
 
 Although the model is fairly simple, due to the non-linearity in the parameters, the choice of priors for Bayesian inference can still be a bit of an art. The temptation is often to choose priors that are wide and relatively un-informative for all parameters, but this can result in inadequate fitting and bias. For example, if one lets both $c$ and $a$ have wide priors, particularly if both can be either positive or negative, the resulting fit can be biased and convergence is poor. The rate of convergence can be greatly improved by instead choosing weakly informative priors for one or both of these parameters. For instance, if we know that our peak probability is high-ish -- above 0.3 or so -- then a prior that constrains $c$ to be positive (as we have done in our examples here) improves the inference substantially -- convergence is faster, more reliable, and mixing of chains is improved. Further, if one has biological knowledge about the likely direction of the skew of the trait, constraining $a$ to reflect this will also improve inference. In the examples given in this study, we chose weakly informative priors. Specifically we chose a prior on $a$ that assumes it is likely to be small, a prior on $T_{opt}$ placing most of the support within the range of the observed data, and, as noted above, assumed that $c>0$ since we knew our maximum probability was well above 0.3. Together these substantially improved convergence. Practitioners taking a maximum likelihood approach would need to constrain optimization routines in similar ways to obtain good results. 
 
-Even with informative priors, model convergence can be challenging, and sensitive to initial conditions. We have found this is especially so when the underlying data being fitted do **not** exhibit strong underlying asymmetry. This is likely because the LINEX TPC *CANNOT* describe a symmetric, unimodal pattern under any parameter values (see @fig-LINEX-extra for more examples of how the shape varies as $a$ and $c$ vary together). If the data were perfectly symmetric, there would be two possible "best" fits of the LINEX TPC to the data -- one left skewed and on right skewed (corresponding to positive or negative values of $a$, respectively). The result would be a bimodal posterior distribution, which is notoriously difficult to sample from, and where the initial values of the sampler will have an outsized influence on the estimated fit. One could break the symmetry with a strong prior on $a$, for example if there is theory to guide the choice [e.g., @amarasekare2012framework], but we also suggest that the instability itself provides additional information in this case that a symmetric model is likely more appropriate. In our examples, the *An. stephensi* data from @huxley2025beyond are not clearly asymmetric and so some of the fits are unstable. Given this, together with the observed table-top pattern in some panels, a symmetric model would likely be better. One possible alternative would be something like a four parameter Stinner model [@stinner1974algorithm] fit with a unit link to the binomial distribution and a prior to constrain the height to be strictly between 0 and 1. 
+Even with informative priors, model convergence can be challenging, and sensitive to initial conditions. We have found this is especially so when the underlying data being fitted do **not** exhibit strong underlying asymmetry or when temperature configurations obscure the location of the peak. In our examples, the *An. stephensi* data from @huxley2025beyond are not clearly asymmetric and so are sensitive to the initial values proposed for $a$. Given this, together with the observed table-top pattern in some panels, a symmetric model would likely be better. One possible alternative would be something like a four parameter Stinner model [@stinner1974algorithm] fit with a unit link to the binomial distribution and a prior to constrain the height to be strictly between 0 and 1. However, if we observed this sensitivity to initial conditions for for fairly symmetric data  where the temperature configurations were more limited and over-fitting was a concern (e.g., only five temperatures in the study by @headlee1942continuation) we would suggest defaulting to the quadratic function instead.
 
 Despite these caveats, the LINEX TPC approach described here provides a parsimonious way to model proportion data when the underlying thermal pattern is asymmetric. Having a range of modeling options is important given the considerable amount of proportion data that are generated through empirical studies on ectotherms. We note that LINEX TPC is not implemented in the `bayesTPC` package or in alternative packages that fit TPCs using other approaches (such as `rTPC`). Thus, our examples, implemented using `bayesTPC`, provide a workable pipeline for fitting asymmetric thermal trait data in applied contexts.  
 
+# Acknowledgements {.unnumbered}
+
+This work previously appeared as a preprint on the bioRxiv (DOI: 10.1101/2025.10.17.683179).
 
 
 \clearpage
@@ -679,7 +688,7 @@ Despite these caveats, the LINEX TPC approach described here provides a parsimon
 ## LINEX shape variation
 
 ```{r, echo=FALSE, fig.align='center', fig.height=5.85, fig.width=5.5}
-#| label: fig-LINEX-extra
+#| label: fig-A1
 #| fig-cap: "**Comparison of shapes of the LINEX TPC for combinations of $a$ and $c$.** Examples of shapes that can be generated by the LINEX TPC. The vertical line indicates the location of the optimum ($T_{\\mathrm{opt}}=20$). Here we focus on left skewed shapes, noting that similar right skewed shapes occur as $a$ changes sign. The left panels shows the shape of the non-linear predictor and the right panel shows the corresponding inverse logit transformed predictor (probability of success). (A) and (B): $a = 0.05$, $c=1,2,3$. (C) and (D): $a = 0.2$, $c=1,2,3$. (E) and (F): $a = 0.5$, $c=1,2,3$."
 
 
@@ -742,7 +751,7 @@ mycount<-mycount+1
 Here we show a set of diagnostic plots and summaries that are the defaults available through `bayesTPC`. We note that these are a simple example using a single MCMC chain. Multi-chain options are also available in `bayesTPC`, but we show the defaults here. To see other options, see @sorek2025.
 
 ```{r, echo=FALSE, fig.align='center', fig.height= 7, fig.width=8}
-#| label: fig-TraceLS
+#| label: fig-A2
 #| fig-cap: "Trace plots for the LINEX model fit to the left skewed simulation data."
 
 ## traceplots
@@ -753,7 +762,7 @@ traceplot(sim.linex.fitl)
 ```
 
 ```{r, echo=FALSE, fig.align='center', fig.height= 6, fig.width=7}
-#| label: fig-PPLS
+#| label: fig-A3
 #| fig-cap: "Prior-posterior overlap plots for the LINEX model fit to the left skewed simulation data."
 
 ## prior/posterior overlap
@@ -764,7 +773,7 @@ ppo_plot(sim.linex.fitl, legend_position = "topright")
 ```
 
 ```{r, echo=FALSE, fig.align='center', fig.height= 6, fig.width=7}
-#| label: fig-MargLS
+#| label: fig-A4
 #| fig-cap: "Histograms of the marginal posterior samples of parameters for the LINEX model fit to the left skewed simulation data."
 
 ## marginal hists
@@ -775,7 +784,7 @@ hist(sim.linex.fitl)
 ```
 
 ```{r, echo=FALSE, fig.align='center'}
-#| label: fig-JointLS
+#| label: fig-A5
 #| fig-cap: "Pairs plot of samples from the joint posterior of parameters for the LINEX model fit to the left skewed simulation data."
 ## joint posterior
 ipairs(sim.linex.fitl)

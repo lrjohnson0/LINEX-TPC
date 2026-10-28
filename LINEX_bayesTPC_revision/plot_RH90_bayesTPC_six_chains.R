@@ -211,10 +211,10 @@ open_pdf <- function(path, width, height) {
 open_pdf(file.path(output, "RH90_bayesTPC_four_panel_diagnostic.pdf"),
          width = 11, height = 8)
 par(mfrow = c(2, 2), mar = c(4, 4, 3, 1), oma = c(2, 0, 0, 0))
-draw_band(high_band, "LINEX: high mode (six-chain fit)", "#1B9E77")
-draw_band(low_band, "LINEX: low mode (six low starts)", "#D95F02")
-draw_band(mixed_band, "LINEX: 50:50 mode scenario", "#4D4D4D")
-base_panel("Quadratic: six chains pooled")
+draw_band(high_band, "(A) LINEX: high mode (six-chain fit)", "#1B9E77")
+draw_band(low_band, "(B) LINEX: low mode (six low starts)", "#D95F02")
+draw_band(mixed_band, "(C) LINEX: 50:50 mode scenario", "#4D4D4D")
+base_panel("(D) Quadratic: six chains pooled")
 polygon(c(grid, rev(grid)), c(quad_band[1, ], rev(quad_band[3, ])),
         col = grDevices::adjustcolor("#7570B3", alpha.f = 0.18), border = NA)
 lines(grid, quad_band[2, ], col = "#7570B3", lwd = 2)

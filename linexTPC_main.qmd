@@ -470,7 +470,7 @@ Here we give examples from two similar data sets where we show how the user coul
 
 ### Larvae to adult emergence probability for *Aedes aegypti* {#sec-headlee}
 
-Our first example is from @headlee1942continuation, one of the first studies to explore the temperature dependence of emergence probability in *Ae. aegypti*. This study observed newly emerged larvae, and recorded the proportion of these emerging as adults, at each of five fixed temperatures. Thus, the trait aggregates survival and development across multiple life stages (3 larval instars, and pupae), but does not include the probability of hatching from the egg stage. This study only included 5 temperature settings, and thus a minimal parameter model is vital, as models with more parameters are likely to overfit and have poor resolution of parameters. We fit the LINEX TPC in the binomial likelihood framework and a more standard quadratic GLM to these data. We use WAIC as our metric for model selection. 
+Our first example is from @headlee1942continuation, one of the first studies to explore the temperature dependence of emergence probability in *Ae. aegypti*. This study observed newly emerged larvae, and recorded the proportion of these emerging as adults, at each of five fixed temperatures. Thus, the trait aggregates survival and development across multiple life stages (4 larval instars, and pupae), but does not include the probability of hatching from the egg stage. This study only included 5 temperature settings, and thus a minimal parameter model is vital, as models with more parameters are likely to overfit and have poor resolution of parameters. We fit the LINEX TPC in the binomial likelihood framework and a more standard quadratic GLM to these data. We use WAIC as our metric for model selection. 
 
 
 
@@ -522,7 +522,7 @@ WAIC_df <- data.frame(
 
 ```
 
-As we can see in @fig-4, the LINEX TPC is visually a much better fit than the quadratic -- these data seem to be fairly obviously asymmetric. For both models, all 6 chains converge appropriately (see Appendix @sec-headlee-trace). The WAIC scores confirm the visual assessment, showing that for these data, the LINEX TPC is strongly preferred (@fig-4).
+As we can see in @fig-4, the LINEX TPC is visually a better fit than the quadratic -- these data seem to be fairly obviously asymmetric. For both models, all 6 chains converge appropriately (see Appendix @sec-headlee-trace). The WAIC scores confirm the visual assessment, showing that for these data, the LINEX TPC is preferred (@fig-4).
 
 ```{r, echo=FALSE, fig.align='center', fig.height=3.25, fig.width=7, warning=FALSE}
 #| label: fig-4
@@ -547,26 +547,15 @@ text(15.5, 1.1, labels = "(B)", adj=c(0,1), cex=1.25)
 
 ### Egg to adult emergence probability for *Anopheles stephensi*
 
-For our second example, we examine data from @huxley2025beyond on the proportion of *An. stephensi* eggs that successfully develop into adults across 9 temperatures and 3 different relative humidity (RH) levels. This trait aggregates survival and development across multiple life stages (egg, 3 instars, and pupa) into a single metric. TPCs for this trait are typically assumed to be symmetric (e.g., quadratic). Thus we would expect that the LINEX TPC would not capture the patterns well. The goal was to fit the same two models to data at each humidity level separately, and choose the best/most appropriately fitting model at each humidity level. We also use this example to show the importance of running multiple chains before interpreting fit and choosing between models. 
+For our second example, we examine data from @huxley2025beyond on the proportion of *An. stephensi* eggs that successfully develop into adults across 9 temperatures and 3 different relative humidity (RH) levels. This trait aggregates survival and development across multiple life stages (egg, 4 instars, and pupa) into a single metric. TPCs for this trait are typically assumed to be symmetric (e.g., quadratic). Thus we would expect that the LINEX TPC would not capture the patterns well. The goal was to fit the same two models to data at each humidity level separately, and compare the model fits at each humidity level. We also use this example to show how single chain/single start fits can be misleading for model selection and interpretation, and that convergence and model selection metrics do not guarantee model adequacy. 
 
 ```{r, message=FALSE, echo=FALSE, warning=FALSE}
 
 set.seed(9876)
 bjs_data <- read.csv("data/binomial-juvenile-survival-data.csv")
 
-RH<-c(45, 75, 90)#unique(bjs_data$rh)
+RH<-c(45, 75, 90)
 l<-length(RH)
-
-#par(mfrow=c(1,3), bty="n")
-#for(i in 1:l){
-#  w<-which(bjs_data$rh==RH[i])
-#  plot(Trait/n~Temp, data=bjs_data[w,],
-#       main = paste("RH = ", RH[i], sep=""),
-#       xlim=c(10,45), xlab="Temp (deg C)",
-#       ylim=c(0,1), ylab = "prop emerging",
-#       col = i)
-#}
-
 ```
 
 
@@ -604,7 +593,7 @@ myWAIC<-round(myWAIC)
 
 ```{r, echo=FALSE, fig.align='center', fig.height=7.5, fig.width=6, warning=FALSE}
 #| label: fig-5
-#| fig-cap: "**Fits to *An. stephensi* juvenile survival data using a single MCMC chain.** Visualization of posterior fits of the LINEX TPC and quadratic generalized linear model to data on the proportion of *An. stephensi* eggs emerging as adults across temperature for three humidity levels (from @huxley2025beyond). The median fit is indicated with a solid red line, the 95% HPD interval of the TPC as the dashed blue lines. WAIC for the corresponding fits are shown in each panel. The $*$ in the LINEX, RH=90 result indicates an unreliable WAIC from only one portion of a multimodel posterior distribution." 
+#| fig-cap: "**Example fits to *An. stephensi* juvenile survival data using a single MCMC chain.** Visualization of posterior fits of the LINEX TPC and quadratic generalized linear model to data on the proportion of *An. stephensi* eggs emerging as adults across temperature for three humidity levels (from @huxley2025beyond). The median fit is indicated with a solid red line, the 95% HPD interval of the TPC as the dashed blue lines, and was derived from a single MCMC chain." 
 
 myleg<-c(T,F)
 par(mfrow=c(3, 2), mar = c(4, 4, 2, 1) + 0.1)
@@ -613,44 +602,35 @@ for(i in 1:2){
        legend=myleg[i], legend_position = "topleft",
        main = paste("LINEX, RH = ", RH[i], sep=""),
        xlab="")
-  text(28, 0.1, paste("WAIC = ", myWAIC[i,2], sep=""))
+#  text(28, 0.1, paste("WAIC = ", myWAIC[i,2], sep=""))
 
   plot(sim.quad.fit.moz[[i]], ylim=c(0,1), xlim=c(14,42), legend=F, 
        main=paste("Quadratic, RH = ", RH[i], sep=""),
        xlab="")
-  text(28, 0.1, paste("WAIC = ", myWAIC[i,3], sep=""))
-
+#  text(28, 0.1, paste("WAIC = ", myWAIC[i,3], sep=""))
 }
 
 i<-3
   plot(sim.linex.fit.moz[[i]], ylim=c(0,1), xlim=c(14,42), legend=F, 
        main = paste("LINEX, RH = ", RH[i], sep=""))
-  text(28, 0.1, paste("WAIC* = ", myWAIC[i,2], sep=""))
+#  text(28, 0.1, paste("WAIC* = ", myWAIC[i,2], sep=""))
 
   plot(sim.quad.fit.moz[[i]], ylim=c(0,1), xlim=c(14,42), legend=F, 
        main=paste("Quadratic, RH = ", RH[i], sep=""))
-  text(28, 0.1, paste("WAIC = ", myWAIC[i,3], sep=""))
+#  text(28, 0.1, paste("WAIC = ", myWAIC[i,3], sep=""))
 
 ```
 
-```{r, echo=FALSE, eval=FALSE, fig.align='center'}
-#| label: tbl-mozJuvSurvFitsWAIC
-#| tbl-cap: "WAIC values for the LINEX and quadratic generalized linear model fits from @fig-5." 
- 
-knitr::kable(round(myWAIC, 2))
-```
+We can see in @fig-5 that both models visually have reasonable fits at each humidity level, although the relatively flat emergence probability across a wide temperature range seen at 90% RH (bottom two rows) is not particularly well captured by either model. At first glance, model selection via WAIC prefers the symmetric quadratic function at most RH, but at 75% RH the LINEX is favored for these priors and starting value with a single MCMC run (see @tbl-A1). However, these superficial results from a single MCMC chain  hide important details about the relative performance of the two models. 
+
+As noted at the beginning of this section, it is usually assumed that data of this sort should be symmetric.  Indeed we can visually see that most of the data appear fairly symmetric, and in many cases the WAIC would support the quadratic pattern. However, the LINEX TPC *CANNOT* describe a symmetric, unimodal pattern under any parameter values (see @fig-A1 for more examples of how the shape varies as $a$ and $c$ vary together). Thus, if the data were perfectly symmetric, there would be two equally likely possible "best" fits of the LINEX TPC to the data -- one left skewed and on right skewed (corresponding to positive or negative values of $a$, respectively). The result would be a bi-modal likelihood/posterior distribution, which is notoriously difficult to sample from, and where the initial values of the sampler or optimization routine can have an out-sized influence on the estimated fit. 
+
+We can see this effect if we more closely examine the MCMC chains and fits for the LINEX TPC for a subset of these data. For the 90% RH treatment, we re-fit the data with 18 MCMC chains -- six LINEX TPC initialized with $a>0$, six LINEX TPC initialized with $a<0$, and six for the quadratic (see supplemental code for this case). Examining the trace plots (Appendix @fig-A7 -- @fig-A9), we can see that the quadratic chains converge to the same solution regardless of where they start. However,  for the LINEX TPC the 6 chains each explore separate posterior regions -- if the initial value of $a$ is negative the chains stay negative whereas a positive initial value of $a$ stays positive, producing fits with the corresponding skew. This is a common pattern in multi-modal posterior distributions when the modes are fairly distinct and both have similar posterior probability. A practitioner using the LINEX TPC function in a classical MLE framework would experience related issues estimating parameters as the initial value will determine the local maximum found by an optimization routine. 
+
+There are a variety of approaches to deal with multimodal posteriors. For example, one could use stacking approaches [@yao2022stacking] where samples from multiple modes are combined (we show an illustrative equal-weight mixture of chains from the two regions in @fig-6). One could break the symmetry with a strong prior on $a$, for example if there is theory to guide the choice [e.g., @amarasekare2012framework], or could use a more complex model (which increases uncertainty in parameters for small datasets, but concurrently can make sampling easier). Alternatively, one could treat the right and left skew versions of LINEX TPC separately (equivalent to considering priors that restrict $a$ to be strictly positive or strictly negative), fit both and choose between them and the quadratic. This would be more similar to what is considered for TPCs of continuous traits being modeled with separate right and left skewed variants of Brière curves, for example. However, we suggest that the kind of  instability/multimodality that we see here provides additional information that a symmetric model may be more appropriate for these data. A practitioner can use the strong multimodality of the posterior, along with the visual patterns and the WAIC values from each separate fit to inform which model to use for knock-on analyses, instead of relying solely on any one aspect of model fit. 
 
 
-We can see in @fig-5 that both models visually have reasonable fits at each humidity level, although the relatively flat emergence probability across a wide temperature range seen at 90% RH (bottom two rows) is not particularly well captured by either model. At first glance, model selection via WAIC prefers the symmetric quadratic function at most RH, but at 75% RH the LINEX is favored for these priors and starting value with a single MCMC run. However, these superficial results hide important details about the relative performance of the two models. 
-
-As noted at the beginning of this section, it is usually assumed that data of this sort should be symmetric.  Indeed we can visually see that most of the data appear fairly symmetric, and in many cases the WAIC would support the quadratic pattern. However, the LINEX TPC *CANNOT* describe a symmetric, unimodal pattern under any parameter values (see @fig-A1 for more examples of how the shape varies as $a$ and $c$ vary together). Thus, if the data were perfectly symmetric, there would be two possible "best" fits of the LINEX TPC to the data -- one left skewed and on right skewed (corresponding to positive or negative values of $a$, respectively). The result would be a bi-modal likelihood/posterior distribution, which is notoriously difficult to sample from, and where the initial values of the sampler can have an out-sized influence on the estimated fit. 
-
-We can see this effect if we more closely examine the MCMC chains and fits for the LINEX TPC for a subset of these data. For the 90% RH treatment, we re-fit the data with 18 MCMC chains -- six LINEX TPC initialized with $a>0$, six LINEX TPC initialized with $a<0$, and six for the quadratic (see Supplemental materials for the code for this case). Examining the trace plots (Appendix @fig-A7 -- @fig-A9), we can see that in all three cases the 6 chains each explore separate posterior regions  (i.e., to a right or left solution for LINEX TPC and symmetric for quadratic). However the solutions for the two LINEX TPC cases are different from each other -- if the initial value of $a$ is negative the chains stay negative whereas a positive initial value of $a$ stays positive, producing fits with the corresponding skew. This is a common pattern in multi-modal posterior distributions when the modes are fairly distinct. A practitioner using the LINEX TPC function in a classical MLE framework would experience related issues estimating parameters as the initial value will determine the local maximum found by an optimization routine. 
-
-There are a variety of approaches to deal with multimodal posteriors. For example, one could use stacking approaches [@yao2022stacking] where samples from multiple modes are combined (we show an illustrative equal-weight mixture of chains from the two regions in @fig-6). One could break the symmetry with a strong prior on $a$, for example if there is theory to guide the choice [e.g., @amarasekare2012framework], or could use a more complex model (which increases uncertainty in parameters for small datasets, but concurrently can make sampling easier). Alternatively, one could treat the right and left skew versions of LINEX TPC separately, fit both and choose between them and the quadratic. This would be more similar to what is considered for TPCs of continuous traits being modeled with separate right and left skewed variants of Brière curves, for example. However, we suggest that the instability/multimodality itself provides additional information that a symmetric model may be more appropriate for these data. A practitioner can use the strong multimodality of the posterior, along with the visual patterns and the WAIC values from each separate fit to inform which model to use for knock-on analyses. 
-
-
-![**Comparison of LINEX TPC and quadratic fits to *An. stephensi* juvenile survival data at 90% RH.**  Fits are calculated from muliple chains,  median fit is indicated with a solid line, the 95% HPD interval of the TPC as the shaded region. (A) LINEX fits calculated from 6 chains initialized with $a>0$. (B) LINEX fits calculated from 6 chains initialized with $a<0$. (C) Naive "stacked" LINEX fit calculated from 12 chains, combining those from the top row. (D) Quadratic fits calculated from 6 chains with random initialization.](LINEX_bayesTPC_revision/results/figures/RH90_bayesTPC_four_panel_diagnostic.pdf){fig.align="center" width=500 #fig-6}
+![**Comparison of LINEX TPC and quadratic fits to *An. stephensi* juvenile survival data at 90% RH.**  Fits are calculated from muliple chains,  median fit is indicated with a solid line, the 95% HPD interval of the TPC as the shaded region. (A) LINEX fits calculated from 6 chains initialized with $a>0$. (B) LINEX fits calculated from 6 chains initialized with $a<0$. (C) Naive mixture LINEX fit calculated from 12 chains, combining those from the top row. Note that this 50:50 weighting is illustrative; these chains do not estimate mode probabilities or stacking weights. (D) Quadratic fits calculated from 6 chains with random initialization.](LINEX_bayesTPC_revision/results/figures/RH90_bayesTPC_four_panel_diagnostic.pdf){fig.align="center" width=500 #fig-6}
 
 
 
@@ -668,17 +648,19 @@ The LINEX TPC, together with a simple quadratic (to capture symmetric responses)
 
 Although the model is fairly simple, due to the non-linearity in the parameters, the choice of priors for Bayesian inference can still be a bit of an art. The temptation is often to choose priors that are wide and relatively un-informative for all parameters, but this can result in inadequate fitting and bias. For example, if one lets both $c$ and $a$ have wide priors, particularly if both can be either positive or negative, the resulting fit can be biased and convergence is poor. The rate of convergence can be greatly improved by instead choosing weakly informative priors for one or both of these parameters. For instance, if we know that our peak probability is high-ish -- above 0.3 or so -- then a prior that constrains $c$ to be positive (as we have done in our examples here) improves the inference substantially -- convergence is faster, more reliable, and mixing of chains is improved. Further, if one has biological knowledge about the likely direction of the skew of the trait, constraining $a$ to reflect this will also improve inference. In the examples given in this study, we chose weakly informative priors. Specifically we chose a prior on $a$ that assumes it is likely to be small, a prior on $T_{opt}$ placing most of the support within the range of the observed data, and, as noted above, assumed that $c>0$ since we knew our maximum probability was well above 0.3. Together these substantially improved convergence. Practitioners taking a maximum likelihood approach would need to constrain optimization routines in similar ways to obtain good results. 
 
-Even with informative priors, model convergence can be challenging, and sensitive to initial conditions. We have found this is especially so when the underlying data being fitted do **not** exhibit strong underlying asymmetry or when temperature configurations obscure the location of the peak. In our examples, the *An. stephensi* data from @huxley2025beyond are not clearly asymmetric and so are sensitive to the initial values proposed for $a$. Given this, together with the observed table-top pattern in some panels, a symmetric model would likely be better. One possible alternative would be something like a four parameter Stinner model [@stinner1974algorithm] fit with a unit link to the binomial distribution and a prior to constrain the height to be strictly between 0 and 1. However, if we observed this sensitivity to initial conditions for for fairly symmetric data  where the temperature configurations were more limited and over-fitting was a concern (e.g., only five temperatures in the study by @headlee1942continuation) we would suggest defaulting to the quadratic function instead.
+Even with informative priors, model convergence can be challenging and sensitive to initial conditions due to the fact that the function cannot represent symmetric pattern. We have found this is especially so when the underlying data being fitted do **not** exhibit strong underlying asymmetry or when temperature configurations obscure the location of the peak. Further, in a Bayesian analysis, neither convergence of MCMC chains nor a relatively lower WAIC value guarantee model *adequacy*. In a classical framework, this is usually assessed with residual diagnostics. Posterior predictive diagnostics and similar can help fill this gap. Generally, we suggest that practitioners do not exclusively rely on WAIC metrics when deciding on a model. In our examples, the *An. stephensi* data from @huxley2025beyond are not clearly asymmetric and are sensitive to the initial values proposed for $a$. Given this, together with the observed table-top pattern in some panels, a symmetric model that could capture this pattern would likely be better. One possible alternative would be something like a four parameter Stinner model [@stinner1974algorithm] that explicity captures the table top behavior, fit with a unit link to the binomial distribution and a prior to constrain the height to be strictly between 0 and 1. However, if the temperature configurations were more limited and over-fitting was a concern (e.g., only four or five temperatures in a study), a practitioner would want to weigh the quadratic vs.~LINEX functions based on fit and WAIC together. More generally, if we observe this sensitivity to initial conditions for fairly symmetric data we would suggest that practitioners take a holistic approach to choosing a preferred model -- incorporating prior information, MCMC/optimization behavior, WAIC or other relative fit metrics, and visual fit/residual diagnostics (depending on the approach taken to fit the model). 
 
 Despite these caveats, the LINEX TPC approach described here provides a parsimonious way to model proportion data when the underlying thermal pattern is asymmetric. Having a range of modeling options is important given the considerable amount of proportion data that are generated through empirical studies on ectotherms. We note that LINEX TPC is not implemented in the `bayesTPC` package or in alternative packages that fit TPCs using other approaches (such as `rTPC`). Thus, our examples, implemented using `bayesTPC`, provide a workable pipeline for fitting asymmetric thermal trait data in applied contexts.
 
 # Data and Code Availability
 
-The complete code and data to recreate this document and all results is available as a git repository on GitHub, with an archived version available on Zenodo (***LOCATION***). All code is licensed as **LICENSE** . 
+The complete code and data to recreate this document and all results is available as a git repository on GitHub, with an archived version available on Zenodo (***LOCATION***). All code is licensed under the MIT license. 
 
 # Acknowledgements {.unnumbered}
 
 This work previously appeared as a preprint on the bioRxiv (DOI: 10.1101/2025.10.17.683179). We thank our reviewers for very helpful and constructive feedback.
+
+Generative AI was used to assist with code translation during the analysis. Specifically, we used Posit Assistant (version 1.9.0; underlying model: Sonnet 5.5), an LLM-based coding assistant within `RStudio` (version 2026.09.0+174), in October 2026. The analysis was originally implemented in the `bayesTPC/nimble` framework in `R`. Following a reviewer’s reimplementation of the models in `Stan`, we also implemented them in `Stan`, and then returned to the `bayesTPC/nimble` implementation. Posit Assistant was used to translate and debug Bayesian model code from `Stan` to the `bayesTPC/nimble` framework in `R`. We used it because the analysis required re-implementing our models in a different probabilistic programming framework. The authors reviewed and ran all AI-generated code. We verified the translated models by comparing posterior estimates with previous outputs. The authors take full responsibility for the accuracy of the code, analyses, and conclusions
 
 
 \clearpage
@@ -857,7 +839,19 @@ coda::traceplot(quad_fit$samples)
 
 \clearpage
 
-## Trace plots for *An. stephensi* data at 90% RH
+
+## Supporting results for *An. stephensi* data example
+
+```{r, echo=FALSE, eval=T, fig.align='center'}
+#| label: tbl-A1
+#| tbl-cap: "WAIC values for the LINEX and quadratic generalized linear model fits from @fig-5." 
+ 
+knitr::kable(round(myWAIC, 2))
+```
+
+\clearpage
+
+### Trace plots for *An. stephensi* data at 90% RH
 
 ![Trace plots for LINEX TPC fit with $a<0$, 6 chains](LINEX_bayesTPC_revision/results/figures/RH90_bayesTPC_LINEX_negative_six_chain_trace.pdf){fig.align="center" width=600 #fig-A7}
 

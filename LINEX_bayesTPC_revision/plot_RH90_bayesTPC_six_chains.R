@@ -209,18 +209,18 @@ open_pdf <- function(path, width, height) {
   }
 }
 open_pdf(file.path(output, "RH90_bayesTPC_four_panel_diagnostic.pdf"),
-         width = 11, height = 8)
-par(mfrow = c(2, 2), mar = c(4, 4, 3, 1), oma = c(2, 0, 0, 0))
-draw_band(high_band, "(A) LINEX: high mode (six-chain fit)", "#1B9E77")
-draw_band(low_band, "(B) LINEX: low mode (six low starts)", "#D95F02")
-draw_band(mixed_band, "(C) LINEX: 50:50 mode scenario", "#4D4D4D")
+         width = 9, height = 7)
+par(mfrow = c(2, 2), mar = c(5, 4, 3, 1), oma = c(2, 0, 0, 0))
+draw_band(high_band, "(A) LINEX: positive-a starts", "#1B9E77")
+draw_band(low_band, "(B) LINEX: negative-a starts", "#D95F02")
+draw_band(mixed_band, "(C) LINEX: equal-weight mixture", "#4D4D4D")
 base_panel("(D) Quadratic: six chains pooled")
 polygon(c(grid, rev(grid)), c(quad_band[1, ], rev(quad_band[3, ])),
         col = grDevices::adjustcolor("#7570B3", alpha.f = 0.18), border = NA)
 lines(grid, quad_band[2, ], col = "#7570B3", lwd = 2)
 points(dat$Temp, dat$Trait / dat$n, pch = 19)
-mtext("50:50 weighting is illustrative; these chains do not estimate mode probabilities or stacking weights.",
-      side = 1, outer = TRUE, line = 0.5, cex = 0.75)
+#mtext("50:50 weighting is illustrative; these chains do not estimate mode probabilities or stacking weights.",
+#      side = 1, outer = TRUE, line = 0.5, cex = 0.75)
 dev.off()
 
 cols <- grDevices::hcl.colors(6L, "Dark 3")
@@ -275,10 +275,10 @@ linex_titles <- c("LINEX a", "Optimal temperature", "LINEX cc",
 linex_vars <- c("a", "Topt", "cc", "p30")
 write_trace("RH90_bayesTPC_LINEX_positive_six_chain_trace.pdf",
             draws[1:6], draws, linex_vars, linex_titles, linex_trace_value,
-            "Unrestricted LINEX: six original chains (default starts)", 1:6)
+            "LINEX: six chains, a>0 starts", 1:6)
 write_trace("RH90_bayesTPC_LINEX_negative_six_chain_trace.pdf",
             draws[7:12], draws, linex_vars, linex_titles, linex_trace_value,
-            "Unrestricted LINEX: six separate negative-start chains", 1:6)
+            "LINEX: six chains, a<0 starts", 1:6)
 quad_chain_draws <- lapply(quadratic_chains, as.matrix)
 write_trace("RH90_bayesTPC_quadratic_six_chain_trace.pdf",
             quad_chain_draws, quad_chain_draws,

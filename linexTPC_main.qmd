@@ -654,13 +654,13 @@ Despite these caveats, the LINEX TPC approach described here provides a parsimon
 
 # Data and Code Availability
 
-The complete code and data to recreate this document and all results is available as a git repository on GitHub, with an archived version available on Zenodo (***LOCATION***). All code is licensed under the MIT license. 
+The complete code and data to recreate this document and all results is available as a git repository on GitHub(`github.com/lrjohnson0/LINEX-TPC`), with an archived version available on Zenodo. All code is licensed under the MIT license. 
 
 # Acknowledgements {.unnumbered}
 
 This work previously appeared as a preprint on the bioRxiv (DOI: 10.1101/2025.10.17.683179). We thank our reviewers for very helpful and constructive feedback.
 
-Generative AI was used to assist with code translation during the analysis. Specifically, we used Posit Assistant (version 1.9.0; underlying model: Sonnet 5.5), an LLM-based coding assistant within `RStudio` (version 2026.09.0+174), in October 2026. The analysis was originally implemented in the `bayesTPC/nimble` framework in `R`. Following a reviewer’s reimplementation of the models in `Stan`, we also implemented them in `Stan`, and then returned to the `bayesTPC/nimble` implementation. Posit Assistant was used to translate and debug Bayesian model code from `Stan` to the `bayesTPC/nimble` framework in `R`. We used it because the analysis required re-implementing our models in a different probabilistic programming framework. The authors reviewed and ran all AI-generated code. We verified the translated models by comparing posterior estimates with previous outputs. The authors take full responsibility for the accuracy of the code, analyses, and conclusions
+Generative AI was used to assist with code translation during the analysis. Specifically, we used Posit Assistant (version 1.9.0; underlying model: Sonnet 5.5), an LLM-based coding assistant within `RStudio` (version 2026.09.0+174), in October 2026. The analysis was originally implemented in the `bayesTPC/nimble` framework in `R`. Following a reviewer’s reimplementation of the models in `Stan`, we also implemented them in `Stan`, and then returned to the `bayesTPC/nimble` implementation. Posit Assistant was used to translate and debug Bayesian model code from `Stan` to the `bayesTPC/nimble` framework in `R`. We used it because the analysis required re-implementing our models in a different probabilistic programming framework. The authors reviewed and ran all AI-generated code. We verified the translated models by comparing posterior estimates with previous outputs. The authors take full responsibility for the accuracy of the code, analyses, and conclusions.
 
 
 \clearpage
@@ -763,9 +763,9 @@ traceplot(sim.linex.fitl)
 #traceplot(sim.linex.fitr)
 ```
 
-```{r, echo=FALSE, fig.align='center', fig.height= 6, fig.width=7}
+```{r, echo=FALSE, fig.align='center', fig.height= 7, fig.width=9}
 #| label: fig-A3
-#| fig-cap: "Prior-posterior overlap plots for the LINEX model fit to the left skewed simulation data."
+#| fig-cap: "Prior-posterior overlap plots for the three parameters of the LINEX model fit to the left skewed simulation data, plotted using the default `ppo_plot` in `bayesTPC`."
 
 ## prior/posterior overlap
 par(mfrow=c(2,2))

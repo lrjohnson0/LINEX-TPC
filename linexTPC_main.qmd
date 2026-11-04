@@ -48,7 +48,7 @@ author:
         state: FL
     corresponding: false
 abstract: > 
-  Ectotherms are subject to temperature impacts on a variety of functional traits, such as fecundity and development. Quantifying the shape of the response of traits to temperature involves fitting (usually) non-linear curves to empirically derived data. This study introduces the LINEX Thermal Performance Curve (TPC), a novel non-linear predictor for modeling asymmetric thermal responses in biological traits. Unlike traditional symmetric TPCs, the LINEX function captures a wide range of asymmetric shapes (e.g., left- or right-skewed), making it particularly suitable for traits like survival or fecundity that often exhibit non-normal, bounded distributions. As an example, the study implements the LINEX TPC within a Bayesian framework using the bayesTPC package in R. We demonstrate the model’s flexibility and utility through simulations and experimental data from arthropod thermal traits. Results highlight the LINEX TPC's superior fit for asymmetric traits compared to standard quadratic models, as evidenced by improved performance metrics. The approach addresses challenges in estimating uncertainty in bounded data, providing an additional tool for ecological and evolutionary studies that require precise thermal sensitivity modeling. This work previously appeared as a preprint on bioRxiv.
+  Ectotherms are subject to temperature impacts on a variety of functional traits, such as fecundity and development. Quantifying the shape of the response of traits to temperature involves fitting (usually) non-linear curves to empirically derived data. This study introduces the LINEX Thermal Performance Curve (TPC), a novel non-linear predictor for modeling asymmetric thermal responses in biological traits. Unlike traditional symmetric TPCs, the LINEX function captures a wide range of asymmetric shapes (e.g., left- or right-skewed), making it particularly suitable for traits like survival or fecundity that often exhibit non-normal, bounded distributions. As an example, the study implements the LINEX TPC within a Bayesian framework using the bayesTPC package in R. We demonstrate the model’s flexibility and utility through simulations and experimental data from arthropod thermal traits. Results highlight the LINEX TPC's fit for asymmetric traits compared to standard quadratic models, as evidenced by improved performance metrics, while exploring challenges and suggesting holistic approaches to choosing TPC models for binomial data. The approach addresses challenges in estimating uncertainty in bounded data, providing an additional tool for ecological and evolutionary studies that require precise thermal sensitivity modeling. This work previously appeared as a preprint on bioRxiv.
 keywords:
   - Thermal Performance Curves
   - binomial data
@@ -654,7 +654,7 @@ Despite these caveats, the LINEX TPC approach described here provides a parsimon
 
 # Data and Code Availability
 
-The complete code and data to recreate this document and all results is available as a git repository on GitHub(`github.com/lrjohnson0/LINEX-TPC`), with an archived version available on Zenodo. All code is licensed under the MIT license. 
+The complete code and data to recreate this document and all results is available as a git repository on GitHub(`github.com/lrjohnson0/LINEX-TPC`), with an archived version available on Zenodo (10.5281/zenodo.23935228). All code is licensed under the MIT license. 
 
 # Acknowledgements {.unnumbered}
 
